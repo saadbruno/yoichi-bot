@@ -1,6 +1,6 @@
 'use strict';
 
-var config = require( "./config.json" ); 
+const config = require("./config.json");
 
 // Import the discord.js module
 const Discord = require('discord.js');
@@ -15,52 +15,52 @@ client.on('ready', () => {
 
 
 //Reply's do Yoichi
-  //
-  const replyFKRS = [
-  "TODO DIA ISSO",
-  "bitch."
-];
+const replies = {
+  "fuckers": [
+    "TODO DIA ISSO",
+    "bitch."
+  ],
+  "dia": [
+    "BOM DIA PRA QUEM?? ",
+    "Bom dia. "
+  ],
+  "noite": [
+    "Boa noite.",
+    "Eu não durmo..."
+  ]
+}
 
-  const replyDIA = [
-  "BOM DIA PRA QUEM?? ",
-  "Bom dia. "
-];
-
-  const replyNOIT = [
-  "Boa noite.",
-  "Eu não durmo..."
-];
-
-
-
-// Create an event listener for messages
+// Escuta por mensagens
 client.on('message', message => {
   if (message.content.toLowerCase().includes("yoichi")) {
     message.react(config.emoteBrabo);
+
+    if (message.content.toLowerCase().includes("fuckers")) {
+
+      var r = ~~(Math.random() * replies.fuckers.length);
+      message.reply(replies.fuckers[r]);
+
+    } else if (message.content.toLowerCase().includes("dia")) {
+
+      var r = ~~(Math.random() * replies.dia.length);
+      message.reply(replies.dia[r] + "<" + config.emoteBrabo + ">");
+
+    } else if (message.content.toLowerCase().includes("noite")) {
+
+      var r = ~~(Math.random() * replies.noite.length);
+      message.reply(replies.noite[r]);
+
+    }
   }
+
   if (message.content.toLowerCase().includes("caleb")) {
     message.react(config.emoteEnvergonhado);
   }
+
   if (message.mentions.has(client.user)) {
     message.channel.send("<" + config.emoteBrabo + ">");
   }
-  
-  if (message.content.toLowerCase().includes("yoichi fuckers")) {
-  const randomFKRS = ~~(Math.random() * replyFKRS.length);
-    message.reply(replyFKRS[randomFKRS]);
-  }
 
-  if (message.content.toLowerCase().includes("dia yoichi")) {
-  const randomDIA = ~~(Math.random() * replyDIA.length);
-    message.reply(replyDIA[randomDIA] + config.emoteBrabo);
-  }
-
-  if (message.content.toLowerCase().includes("noite yoichi")) {
-  const randomNOIT = ~~(Math.random() * replyNOIT.length);
-    message.reply(replyNOIT[randomNOIT]);
-  }
-  
-  
 });
 
 // Log our bot in using the token from https://discord.com/developers/applications
