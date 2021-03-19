@@ -21,6 +21,9 @@ client.on('message', message => {
   if (message.content.toLowerCase().includes("caleb")) {
     message.react(config.emoteEnvergonhado);
   }
+  if (message.mentions.has(client.user)) {
+    message.channel.send("<" + config.emoteBrabo + ">");
+  }
 });
 
 // Log our bot in using the token from https://discord.com/developers/applications
