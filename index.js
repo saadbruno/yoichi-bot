@@ -15,11 +15,11 @@ client.on('ready', () => {
 
 // Create an event listener for messages
 client.on('message', message => {
-  // If the message is "ping"
-
   if (message.content.toLowerCase().includes("yoichi")) {
-    // Send "pong" to the same channel
     message.react('🔥');
+  }
+  if (message.content.toLowerCase().includes("caleb")) {
+    message.react('😳');
   }
 });
 
