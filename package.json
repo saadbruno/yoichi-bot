@@ -1,0 +1,22 @@
+{
+  "name": "yoichi-bot",
+  "version": "1.0.0",
+  "description": "yoichi bot pro monasterio",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saadbruno/yoichi-bot.git"
+  },
+  "author": "SaadBruno",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/saadbruno/yoichi-bot/issues"
+  },
+  "homepage": "https://github.com/saadbruno/yoichi-bot#readme",
+  "dependencies": {
+    "discord.js": "^12.5.1"
+  }
+}
