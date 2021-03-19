@@ -16,10 +16,10 @@ client.on('ready', () => {
 // Create an event listener for messages
 client.on('message', message => {
   if (message.content.toLowerCase().includes("yoichi")) {
-    message.react('🔥');
+    message.react(config.emoteBrabo);
   }
   if (message.content.toLowerCase().includes("caleb")) {
-    message.react('😳');
+    message.react(config.emoteEnvergonhado);
   }
 });
 
