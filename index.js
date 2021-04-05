@@ -27,6 +27,13 @@ const replies = {
     "noite": [
         "Boa noite.",
         "Eu não durmo..."
+    ],
+    "calichi": [
+        "minha relação não é um ship, pelo amor de deus",
+        "mais um fã clube, Yoichi Fuckers?",
+        "mais essa agora...",
+        "que tal parar de falar do meu relacionamento como se eu não tivesse aqui?",
+        "Caleb, por favor... faz isso parar..."
     ]
 }
 
@@ -62,6 +69,13 @@ client.on('message', message => {
             message.reply(replies.noite[r]);
 
         }
+    }
+    
+    // caso o bot leia "calichi" no chat
+    if (message.content.toLowerCase().includes("calichi")) {
+
+            var r = ~~(Math.random() * replies.calichi.length);
+            message.reply(replies.calichi[r]);
     }
 
     // caso o bot leia "caleb" no chat
