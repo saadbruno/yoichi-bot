@@ -53,21 +53,21 @@ client.on('message', message => {
         message.react(config.emoteBrabo);
 
         // respostas adicionais. Se ouvir "fuckers", "dia", ou "noite".
-        if (message.content.toLowerCase().includes("fuckers")) {
+        if (message.content.toLowerCase().includes("fucker")) {
 
             var r = ~~(Math.random() * replies.fuckers.length);
             message.reply(replies.fuckers[r]);
-
+            return;
         } else if (message.content.toLowerCase().includes("dia")) {
 
             var r = ~~(Math.random() * replies.dia.length);
             message.reply(replies.dia[r] + "<" + config.emoteBrabo + ">");
-
+            return;
         } else if (message.content.toLowerCase().includes("noite")) {
 
             var r = ~~(Math.random() * replies.noite.length);
             message.reply(replies.noite[r]);
-
+            return;
         }
     }
     
@@ -76,6 +76,7 @@ client.on('message', message => {
 
             var r = ~~(Math.random() * replies.calichi.length);
             message.reply(replies.calichi[r]);
+            return;
     }
 
     // caso o bot leia "caleb" no chat
@@ -91,16 +92,17 @@ client.on('message', message => {
 
             var r = ~~(Math.random() * replies.dia.length);
             message.reply(replies.dia[r] + "<" + config.emoteBrabo + ">");
-
+            return;
         // caso tenha "noite"
         } else if (message.content.toLowerCase().includes("noite")) {
 
             var r = ~~(Math.random() * replies.noite.length);
             message.reply(replies.noite[r]);
-
+            return;
         // caso contrário, só responde com o emoteBrabo
         } else {
             message.channel.send("<" + config.emoteBrabo + ">");
+            return;
         }
 
     }
