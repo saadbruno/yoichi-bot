@@ -56,9 +56,9 @@ client.on('message', message => {
         // comando pra trocar o avatar
         // USO: !avatar <link>
         if (command === 'avatar') {
-            
-            // verifica se a mensagem veio de um admin
-            if (message.member.hasPermission('ADMINISTRATOR')) {
+
+            // verifica se a mensagem veio de um admin de algum dos servidores autorizados
+            if (config.servidoresAutorizados.includes(message.channel.guild.id) && message.member.hasPermission('ADMINISTRATOR')) {
                 // verifica se a mensagem tem um argumento
                 if (!args.length) {
                     // se não tiver um argumento na mensagem
@@ -89,7 +89,7 @@ client.on('message', message => {
                         });
                 }
             } else {
-                console.log('\n\n:: [WARN 5] alguem tentou usar o comando de Avatar, mas não tem permissão de admin');
+                console.log('\n\n:: [WARN 5] alguem tentou usar o comando de Avatar, mas não tem permissão de admin em nenhum servidor autorizado');
                 return message.reply(`Você não manda em mim!! <${config.emoteBrabo}>`);
             }
 

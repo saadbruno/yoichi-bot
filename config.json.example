@@ -1,6 +1,10 @@
 {
     "token": "token.do.discord.aqui",
     "prefixo": "!",
+    "servidoresAutorizados": [
+        "111222333444555666",
+        "769993479220232272"
+    ],
     "emoteBrabo": "😠",
     "emoteEnvergonhado": "😳"
 }
