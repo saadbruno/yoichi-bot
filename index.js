@@ -4,6 +4,7 @@ const config = require("./config.json");
 
 // Import the discord.js module
 const Discord = require('discord.js');
+const fetch = require('node-fetch');
 
 // Create an instance of a Discord client
 const client = new Discord.Client();
@@ -44,6 +45,56 @@ client.on('message', message => {
     if(message.author.bot) {
         console.log("recebida mensagem de um bot. Ignorando.")
         return;
+    }
+
+    // comandos que começam com o prefixo
+    if (message.content.startsWith(config.prefixo)) {
+
+        const args = message.content.slice(config.prefixo.length).trim().split(/ +/);
+        const command = args.shift().toLowerCase();
+
+        // comando pra trocar o avatar
+        // USO: !avatar <link>
+        if (command === 'avatar') {
+            
+            // verifica se a mensagem veio de um admin
+            if (message.member.hasPermission('ADMINISTRATOR')) {
+                // verifica se a mensagem tem um argumento
+                if (!args.length) {
+                    // se não tiver um argumento na mensagem
+                    console.error("\n\n:: [ERRO 1] Avatar: Usuário não enviou um argumento");
+                    return message.channel.send(`Trocar pra o que? Manda a foto, né, ${message.author}!`);
+                } else {
+                    // verifica se o link é uma imagem
+                    fetch(args[0])
+                        .then(res => {
+                            if (res.headers.get('content-type').startsWith('image')) {
+                                // é uma imagem!
+                                console.log(`\n\n :: [INFO] Alterando avatar para ${args[0]}`);
+                                // troca o avatar
+                                client.user.setAvatar(args[0]).catch((error) => {
+                                    console.error(`\n\n:: [ERRO 4] Avatar: Erro ao tentar trocar o avatar\n${error}\n\n`);
+                                    return message.reply(`Não consigo! <${config.emoteBrabo}>`);
+                                });
+                                return message.reply(`Trocando meu avatar! <${config.emoteEnvergonhado}>`);
+
+                            } else {
+                                console.error(`\n\n:: [ERRO 3] Avatar: Link não é uma imagem`);
+                                return message.reply(`Tem que ser uma imagem, né! <${config.emoteBrabo}>`);
+                            }
+                        })
+                        .catch((error) => {
+                            console.error(`\n\n:: [ERRO 2] Avatar: Argumento não é um link\n${error}\n\n`);
+                            return message.reply(`Tem que ser uma imagem, né! <${config.emoteBrabo}>`);
+                        });
+                }
+            } else {
+                console.log('\n\n:: [WARN 5] alguem tentou usar o comando de Avatar, mas não tem permissão de admin');
+                return message.reply(`Você não manda em mim!! <${config.emoteBrabo}>`);
+            }
+
+        }
+        return
     }
 
     // caso o bot leia "yoichi" no chat

@@ -1,5 +1,6 @@
 {
     "token": "token.do.discord.aqui",
+    "prefixo": "!",
     "emoteBrabo": "😠",
     "emoteEnvergonhado": "😳"
 }
