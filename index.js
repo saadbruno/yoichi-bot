@@ -2,20 +2,35 @@
 
 const config = require("./config.json");
 
+const fs = require('fs');
 // Import the discord.js module
 const Discord = require('discord.js');
-const fetch = require('node-fetch');
 
 // Create an instance of a Discord client
 const client = new Discord.Client();
 
+// cria gerenciador de comandos. Essa parte pega todos os arquivos terminados em .js dentro da pasta "comandos", e cria um array com todos eles.
+// isso serve pra separar cada comando prefixado (exemplo: !avatar) em um arquivo separado, pra organizar melhor o código.
+// Tirado de https://discordjs.guide/command-handling/#dynamically-executing-commands
+client.commands = new Discord.Collection();
 
+const commandFiles = fs.readdirSync('./comandos').filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+	const command = require(`./comandos/${file}`);
+	// set a new item in the Collection
+	// with the key as the command name and the value as the exported module
+	client.commands.set(command.name, command);
+}
+
+// inicia o bot
 client.on('ready', () => {
     console.log('YOICHI LIVES!');
 });
 
 
 //Reply's do Yoichi
+// TO-DO: Mover isso pra um banco de dados
 const replies = {
     "fuckers": [
         "TODO DIA ISSO",
@@ -43,58 +58,26 @@ client.on('message', message => {
 
     // se o bot receber uma mensagem de outro bot, ignorar. Isso previne loop infinitos.
     if(message.author.bot) {
-        console.log("recebida mensagem de um bot. Ignorando.")
         return;
     }
 
     // comandos que começam com o prefixo
     if (message.content.startsWith(config.prefixo)) {
 
+        // separa o comando específico e seus argumentos.
+        // Exemplo: !avatar foo bar ---> Comando: "avatar" | Argumentos: "foo" e "bar"
         const args = message.content.slice(config.prefixo.length).trim().split(/ +/);
         const command = args.shift().toLowerCase();
+        console.log(`\n\n:: Executando comando!\n    :: Usuário: ${message.author.username}#${message.author.discriminator}\n    :: Comando: ${command}\n    :: Argumentos: ${args}`);
 
-        // comando pra trocar o avatar
-        // USO: !avatar <link>
-        if (command === 'avatar') {
-
-            // verifica se a mensagem veio de um admin de algum dos servidores autorizados
-            if (config.servidoresAutorizados.includes(message.channel.guild.id) && message.member.hasPermission('ADMINISTRATOR')) {
-                // verifica se a mensagem tem um argumento
-                if (!args.length) {
-                    // se não tiver um argumento na mensagem
-                    console.error("\n\n:: [ERRO 1] Avatar: Usuário não enviou um argumento");
-                    return message.channel.send(`Trocar pra o que? Manda a foto, né, ${message.author}!`);
-                } else {
-                    // verifica se o link é uma imagem
-                    fetch(args[0])
-                        .then(res => {
-                            if (res.headers.get('content-type').startsWith('image')) {
-                                // é uma imagem!
-                                console.log(`\n\n :: [INFO] Alterando avatar para ${args[0]}`);
-                                // troca o avatar
-                                client.user.setAvatar(args[0]).catch((error) => {
-                                    console.error(`\n\n:: [ERRO 4] Avatar: Erro ao tentar trocar o avatar\n${error}\n\n`);
-                                    return message.reply(`Não consigo! <${config.emoteBrabo}>`);
-                                });
-                                return message.reply(`Trocando meu avatar! <${config.emoteEnvergonhado}>`);
-
-                            } else {
-                                console.error(`\n\n:: [ERRO 3] Avatar: Link não é uma imagem`);
-                                return message.reply(`Tem que ser uma imagem, né! <${config.emoteBrabo}>`);
-                            }
-                        })
-                        .catch((error) => {
-                            console.error(`\n\n:: [ERRO 2] Avatar: Argumento não é um link\n${error}\n\n`);
-                            return message.reply(`Tem que ser uma imagem, né! <${config.emoteBrabo}>`);
-                        });
-                }
-            } else {
-                console.log('\n\n:: [WARN 5] alguem tentou usar o comando de Avatar, mas não tem permissão de admin em nenhum servidor autorizado');
-                return message.reply(`Você não manda em mim!! <${config.emoteBrabo}>`);
-            }
-
+        // tenta executar o comando, dentro da pasta "commandos"
+        try {
+            client.commands.get(command).execute(message, args);
+        } catch (error) {
+            console.error(error);
+            message.reply(`Deu ruim, galera! <${config.emoteBrabo}>`);
         }
-        return
+
     }
 
     // caso o bot leia "yoichi" no chat
