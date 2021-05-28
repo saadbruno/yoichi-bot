@@ -75,7 +75,6 @@ client.on('message', message => {
             client.commands.get(command).execute(message, args);
         } catch (error) {
             console.error(error);
-            message.reply(`Deu ruim, galera! <${config.emoteBrabo}>`);
         }
 
     }
