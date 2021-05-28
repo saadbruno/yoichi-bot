@@ -74,6 +74,7 @@ module.exports = {
 
 		// pega linha no airtable relativa à página e capítulos solicitados
 		base('mondolis').select({
+			maxRecords: 1,
 			view: 'Grid view',
 			filterByFormula: `AND({capitulo} = '${pagCap.c}', {pagina} = '${pagCap.p}', {url} != '') `,
 		}).firstPage(function (err, records) {
