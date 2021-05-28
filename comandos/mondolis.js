@@ -1,14 +1,8 @@
 const config = require("../config.json");
 var Airtable = require('airtable');
-// Airtable.configure({
-// 	endpointUrl: 'https://api.airtable.com',
-// 	apiKey: config.airtableKey
-// });
-// var base = Airtable.base(config.airtableBase);
-
 
 var Airtable = require('airtable');
-var base = new Airtable({ apiKey: 'key7IA2T4uMnnn1sC' }).base('app1lSsv8iVHBQjVZ');
+var base = new Airtable({ apiKey: config.airtableKey }).base(config.airtableBase);
 
 module.exports = {
 	name: 'mondolis',
@@ -34,9 +28,7 @@ module.exports = {
 
 		// caso o primeiro argumento seja tudo junto, tipo c1p2 ou c2p30
 		if (/c([0-9]+)p([0-9]+)/i.test(args[0])) {
-			console.log(args[0]);
 			const cpSplit = args[0].split(/c|p/);
-			console.log(cpSplit);
 			pagCap = {
 				"c": cpSplit[1],
 				"p": cpSplit[2]
@@ -91,7 +83,7 @@ module.exports = {
 				return message.channel.send(`Não encontrei essa página <${config.emoteBrabo}>`);
 			}
 			records.forEach(function (record) {
-				console.log('Retrieved', record.get('url'));
+				console.log('\n:: Retrieved', record.get('url'));
 				message.channel.send(`Mondolís: Capítulo ${pagCap.c}, Página ${pagCap.p}\n${record.get('url')}`)
 			});
 		});
