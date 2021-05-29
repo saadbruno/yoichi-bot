@@ -26,7 +26,7 @@ for (const file of commandFiles) {
 
 // inicia o bot
 client.on('ready', () => {
-    console.log('YOICHI LIVES!');
+    console.log(`==== YOICHI BOT ====\n:: Logado como ${client.user.username}#${client.user.discriminator} \n:: Online em ${client.guilds.cache.size} servidores \n====================`);
 });
 
 
@@ -147,6 +147,17 @@ new CronJob(
     "0 0 14 * * *",
     () => {
         client.commands.get("aniversario").execute("", "", client);
+    },
+    null,
+    true,
+    "America/Sao_Paulo"
+);
+
+// cron que remove a role de "não sabe contar" todo dia 1 de cada mês
+new CronJob(
+    "0 0 0 1 * *",
+    () => {
+        client.commands.get("purgerole").execute("", [config.roleCounting], client);
     },
     null,
     true,

@@ -25,6 +25,7 @@ Pull requests são muito bem vindas!
   - `airtableKey`: Sua chave de API do Airtable, disponível [na sua conta](https://airtable.com/account)
   - `airtableBase`: O ID da sua base (planilha) do Airtable, disponível na [documentação do Airtable](https://airtable.com/api)
   - `canalAniversario`: O ID do canal que o bot vai postar as mensagens de aniversário
+  - `roleCounting`: A role de "Não sabe contar". O bot remove essa role de todos os membros em todo dia 1 de cada mês
 - Instale as dependencias com `npm install`
 - Rode o bot com o comando `node index.js`
 
