@@ -8,9 +8,8 @@ module.exports = {
 	description: 'aniversario!',
 	execute(message, args, client) {
 
-        var canalResposta;
-
         // Esse copmando pode ser executado via Cron. Nesses casos, não existe um message.channel pra responder, então a gente usa o canal configurado no config.json
+        var canalResposta;
         if (message) {
             console.log('\n:: [aniversario] Comando foi enviado por um usuário. Respondendo no canal que o comando foi executado.');
             canalResposta = message.channel;
@@ -25,7 +24,7 @@ module.exports = {
 
 		base('anivers').select({
             view: 'Grid view',
-			 filterByFormula: `AND({dia} = '${dia}', {mes} = '${mes}')`
+			filterByFormula: `AND({dia} = '${dia}', {mes} = '${mes}')`
 		
         }).firstPage(function (err, records) {
             if (err) { console.error(err); return; }
