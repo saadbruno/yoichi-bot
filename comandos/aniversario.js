@@ -42,37 +42,37 @@ module.exports = {
             view: 'Grid view',
             filterByFormula: `OR(AND({dia} = '${data.hoje.dia}', {mes} = '${data.hoje.mes}'), AND({dia} = '${data.ontem.dia}', {mes} = '${data.ontem.mes}'))`
         }).firstPage(function (err, records) {
-            if (err) { console.error(err); return; }
-            if (!records.length) {
-                return console.log("\n:: [aniversario] Não existem aniversário hoje! :(")
-            }
+            if (err) { return console.error(err); }
+            if (!records.length) { return console.log("\n:: [aniversario] Não existem aniversários hoje, nem ontem! :(") }
+
             records.forEach(function (record) {
-
-                console.log(`\n:: [aniversario] Retirado do Airtable: ${record.get('Nome')}, ${record.get('dia')}/${record.get('mes')}`);
-
+                console.log(`:: [aniversario] Retirado do Airtable: ${record.get('Nome')}, ${record.get('dia')}/${record.get('mes')}`);
                 // Dá um fetch na guild pelo usuário. Caso o usuário exista na guild, confere a data do aniversário e age de acordo.
                 guild.members.fetch(record.get('Discord ID'))
                     .then(function (member) {
-                        // se a pessoa faz aniversário hoje, dá a role e manda parabéns. Se não faz, remove a role
-                        if (record.get('dia') == data.hoje.dia) {
-                            member.roles.add(role);
-
-                            // se o comando foi executado por um usuário (contém uma mensagem) OU se o primeiro argumento for "post" (por causa do cron), envia a lista de aniversariantes
-                            if(message || args[0] == "post") {
-                                // formata a mensagem que será enviada
-                                var mensagem = `Parabéns <@${record.get('Discord ID')}> <${config.emoteBrabo}>`;
-                                // Posta a mensagem no canal determinado anteriormente
-                                canalResposta.send(mensagem);
-                            }
-
-                        } else {
-                            member.roles.remove(role);
-                        }
+                       return aniversariante(member, record.get('dia'));
                     })
                     .catch(error => console.error(error));
-
             });
         });
+
+        // Função que gerencia as roles de aniversário, e decide se envia mensagem no canal
+        function aniversariante(member, dia) {
+            // se a pessoa não faz aniversario hoje, remove a role e termina execução
+            if (dia != data.hoje.dia) {
+                console.log(`:: [aniversario] ${member.user.username} não faz aniversário hoje. Removendo a role ${role.name}`);
+                return member.roles.remove(role);
+            }
+
+            console.log(`:: [aniversario] ${member.user.username} - Adicionando role ${role.name}`)
+            member.roles.add(role);
+            //se o comando foi executado por um usuário (contém uma mensagem) OU se o primeiro argumento for "post" (por causa do cron), envia a lista de aniversariantes
+            if(message || args[0] == "post") {
+                // formata e envia a mensagem que será enviada
+                var mensagem = `Parabéns <@${member.user.id}> <${config.emoteBrabo}>`;
+                canalResposta.send(mensagem);
+            }
+        }
 
     },
 };
