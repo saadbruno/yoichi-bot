@@ -18,7 +18,7 @@ module.exports = {
         }).firstPage(function (err, records) {
             if (err) { console.error(err); return; }
             if (!records.length) {
-                return message.channel.send(`Não encontrei essa página <${config.emoteBrabo}>`);
+                return console.log("\n:: Não existem aniversário hoje! :(")
             }
             records.forEach(function (record) {
 
