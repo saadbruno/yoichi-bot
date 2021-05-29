@@ -50,7 +50,7 @@ module.exports = {
                 // Dá um fetch na guild pelo usuário. Caso o usuário exista na guild, confere a data do aniversário e age de acordo.
                 guild.members.fetch(record.get('Discord ID'))
                     .then(function (member) {
-                       return aniversariante(member, record.get('dia'));
+                        return aniversariante(member, record.get('dia'));
                     })
                     .catch(error => console.error(error));
             });
@@ -61,13 +61,15 @@ module.exports = {
             // se a pessoa não faz aniversario hoje, remove a role e termina execução
             if (dia != data.hoje.dia) {
                 console.log(`:: [aniversario] ${member.user.username} não faz aniversário hoje. Removendo a role ${role.name}`);
-                return member.roles.remove(role);
+                return member.roles.remove(role)
+                    .catch(error => console.error(`\n:: [aniversario] ERRO: Não foi possivel remover a role ${role.name} do usuário ${member.user.username}#${member.user.discriminator}. O bot tem permissão pra fazer isso?\n`, error));
             }
 
-            console.log(`:: [aniversario] ${member.user.username} - Adicionando role ${role.name}`)
-            member.roles.add(role);
+            console.log(`:: [aniversario] ${member.user.username}#${member.user.discriminator} - Adicionando role ${role.name}`)
+            member.roles.add(role)
+                .catch(error => console.error(`\n:: [aniversario] ERRO: Não foi possivel adicionar a role ${role.name} ao usuário ${member.user.username}#${member.user.discriminator}. O bot tem permissão pra fazer isso?\n`, error));
             //se o comando foi executado por um usuário (contém uma mensagem) OU se o primeiro argumento for "post" (por causa do cron), envia a lista de aniversariantes
-            if(message || args[0] == "post") {
+            if (message || args[0] == "post") {
                 // formata e envia a mensagem que será enviada
                 var mensagem = `Parabéns <@${member.user.id}> <${config.emoteBrabo}>`;
                 canalResposta.send(mensagem);
