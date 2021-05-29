@@ -75,7 +75,7 @@ client.on('message', message => {
         try {
             client.commands.get(command).execute(message, args, client);
         } catch (error) {
-            console.error(error);
+            console.error(`:: Erro ao executar comando ${command}. Tem certeza que esse comando existe?\n\n`, error);
         }
 
     }

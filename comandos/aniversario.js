@@ -62,12 +62,12 @@ module.exports = {
             if (dia != data.hoje.dia) {
                 console.log(`:: [aniversario] ${member.user.username} não faz aniversário hoje. Removendo a role ${role.name}`);
                 return member.roles.remove(role)
-                    .catch(error => console.error(`\n:: [aniversario] ERRO: Não foi possivel remover a role ${role.name} do usuário ${member.user.username}#${member.user.discriminator}. O bot tem permissão pra fazer isso?\n`, error));
+                    .catch(error => console.error(`\n:: [aniversario] ERRO: Não foi possivel remover a role ${role.name} do usuário ${member.user.username}#${member.user.discriminator}. O bot tem permissão pra fazer isso?\n\n`, error));
             }
 
             console.log(`:: [aniversario] ${member.user.username}#${member.user.discriminator} - Adicionando role ${role.name}`)
             member.roles.add(role)
-                .catch(error => console.error(`\n:: [aniversario] ERRO: Não foi possivel adicionar a role ${role.name} ao usuário ${member.user.username}#${member.user.discriminator}. O bot tem permissão pra fazer isso?\n`, error));
+                .catch(error => console.error(`\n:: [aniversario] ERRO: Não foi possivel adicionar a role ${role.name} ao usuário ${member.user.username}#${member.user.discriminator}. O bot tem permissão pra fazer isso?\n\n`, error));
             //se o comando foi executado por um usuário (contém uma mensagem) OU se o primeiro argumento for "post" (por causa do cron), envia a lista de aniversariantes
             if (message || args[0] == "post") {
                 // formata e envia a mensagem que será enviada
