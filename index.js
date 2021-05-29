@@ -3,6 +3,7 @@
 const config = require("./config.json");
 
 const fs = require('fs');
+const { CronJob } = require("cron");
 // Import the discord.js module
 const Discord = require('discord.js');
 
@@ -72,7 +73,7 @@ client.on('message', message => {
 
         // tenta executar o comando, dentro da pasta "commandos"
         try {
-            client.commands.get(command).execute(message, args);
+            client.commands.get(command).execute(message, args, client);
         } catch (error) {
             console.error(error);
         }
@@ -141,6 +142,16 @@ client.on('message', message => {
     }
 
 });
+
+new CronJob(
+    "0 0 14 * * *",
+    () => {
+        client.commands.get("aniversario").execute("", "", client);
+    },
+    null,
+    true,
+    "America/Sao_Paulo"
+);
 
 // Log our bot in using the token from https://discord.com/developers/applications
 client.login(config.token);
