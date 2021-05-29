@@ -1,8 +1,8 @@
 const config = require("../config.json");
-var Airtable = require('airtable');
 var moment = require('moment-timezone');
-
+var Airtable = require('airtable');
 var base = new Airtable({ apiKey: config.airtableKey }).base(config.airtableBase);
+
 module.exports = {
 	name: 'aniversario',
 	description: 'aniversario!',
