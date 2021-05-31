@@ -68,12 +68,20 @@ client.on('message', message => {
         // separa o comando específico e seus argumentos.
         // Exemplo: !avatar foo bar ---> Comando: "avatar" | Argumentos: "foo" e "bar"
         const args = message.content.slice(config.prefixo.length).trim().split(/ +/);
-        const command = args.shift().toLowerCase();
-        console.log(`\n\n:: Executando comando!\n    :: Usuário: ${message.author.username}#${message.author.discriminator}\n    :: Comando: ${command}\n    :: Argumentos: ${args}`);
+        const commandName = args.shift().toLowerCase();
+        // encontra o comando pelo name ou pelos aliases
+        const command = client.commands.get(commandName)
+            || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+
+        if (!command) {
+            console.log(`\n\n:: Comando "${commandName}" não encontrado`);
+            return;
+        }
+        console.log(`\n\n:: Executando comando!\n    :: Usuário: ${message.author.username}#${message.author.discriminator}\n    :: Comando: ${commandName}\n    :: Argumentos: ${args}`);
 
         // tenta executar o comando, dentro da pasta "commandos"
         try {
-            client.commands.get(command).execute(message, args, client);
+            command.execute(message, args, client);
         } catch (error) {
             console.error(error);
         }

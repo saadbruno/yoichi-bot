@@ -7,6 +7,7 @@ const config = require("../config.json");
 
 module.exports = {
     name: 'purgerole',
+    aliases: ['rolepurge'],
     description: 'Remove todos os usuários de uma role específica.',
     execute(message, args, client) {
 
