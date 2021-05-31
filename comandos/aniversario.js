@@ -5,6 +5,7 @@ var moment = require('moment-timezone');
 var base = new Airtable({ apiKey: config.airtableKey }).base(config.airtableBase);
 module.exports = {
 	name: 'aniversario',
+    aliases: ['aniversário', 'aniversários', 'aniversarios', 'niver', 'nivers'],
 	description: 'aniversario!',
 	execute(message, args, client) {
 		var dia = moment().tz('America/Sao_Paulo').format("D"); 

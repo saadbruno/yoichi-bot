@@ -6,6 +6,7 @@ var base = new Airtable({ apiKey: config.airtableKey }).base(config.airtableBase
 
 module.exports = {
 	name: 'mondolis',
+	aliases: ['mondolís'],
 	description: 'Posta o link de Mondolís no Tapas',
 	execute(message, args) {
 

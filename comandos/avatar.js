@@ -3,6 +3,7 @@ const config = require("../config.json");
 
 module.exports = {
     name: 'avatar',
+    aliases: ['pfp', 'icon'],
     description: 'Troca o avatar do Bot',
     execute(message, args) {
 
