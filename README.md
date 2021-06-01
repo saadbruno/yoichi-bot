@@ -24,7 +24,9 @@ Pull requests são muito bem vindas!
   - `emoteBrabo` e `emoteEnvergonhado`: São os emotes que o Yoichi reage em casos específicos. Você pode incluir um emoji aqui (como no exemplo) ou algum emote personalizado do Discord (ex: `:yoichibrabo:822537986428239893`)
   - `airtableKey`: Sua chave de API do Airtable, disponível [na sua conta](https://airtable.com/account)
   - `airtableBase`: O ID da sua base (planilha) do Airtable, disponível na [documentação do Airtable](https://airtable.com/api)
+  - `guildAniversario`: O ID do servidor que a role de aniversariante será adicionada
   - `canalAniversario`: O ID do canal que o bot vai postar as mensagens de aniversário
+  - `roleAniversario`: O ID da role de aniversariante
   - `roleCounting`: A role de "Não sabe contar". O bot remove essa role de todos os membros em todo dia 1 de cada mês
 - Instale as dependencias com `npm install`
 - Rode o bot com o comando `node index.js`

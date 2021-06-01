@@ -83,7 +83,7 @@ client.on('message', message => {
         try {
             command.execute(message, args, client);
         } catch (error) {
-            console.error(error);
+            console.error(`:: Erro ao executar comando ${command}. Tem certeza que esse comando existe?\n\n`, error);
         }
 
     }
@@ -151,8 +151,20 @@ client.on('message', message => {
 
 });
 
+// cron que manda parabéns no config.canalAniversario as 14 horas.
 new CronJob(
     "0 0 14 * * *",
+    () => {
+        client.commands.get("aniversario").execute("", ["post"], client);
+    },
+    null,
+    true,
+    "America/Sao_Paulo"
+);
+
+// cron que dá a config.roleAniversario no config.guildAniversario
+new CronJob(
+    "0 0 0 * * *",
     () => {
         client.commands.get("aniversario").execute("", "", client);
     },
