@@ -27,6 +27,7 @@ Pull requests são muito bem vindas!
   - `guildAniversario`: O ID do servidor que a role de aniversariante será adicionada
   - `canalAniversario`: O ID do canal que o bot vai postar as mensagens de aniversário
   - `roleAniversario`: O ID da role de aniversariante
+  - `roleCounting`: A role de "Não sabe contar". O bot remove essa role de todos os membros em todo dia 1 de cada mês
 - Instale as dependencias com `npm install`
 - Rode o bot com o comando `node index.js`
 
