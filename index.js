@@ -151,9 +151,9 @@ client.on('message', message => {
 
 });
 
-// cron que manda parabéns no config.canalAniversario as 14 horas.
+// cron que manda parabéns no config.canalAniversario as 10 horas.
 new CronJob(
-    "0 0 14 * * *",
+    "0 0 10 * * *",
     () => {
         client.commands.get("aniversario").execute("", ["post"], client);
     },
