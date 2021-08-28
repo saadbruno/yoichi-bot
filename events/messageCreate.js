@@ -12,6 +12,16 @@ module.exports = {
 
         // console.log(`:: ${message.author.tag} enviou uma mensagem em #${message.channel.name}: ${message.content}`);
 
+        // UX: Fala pros usuários que os comandos agora são usados com /
+        if (message.content.startsWith(config.prefixo)) {
+            const args = message.content.slice(config.prefixo.length).trim().split(/ +/);
+            const commandName = args.shift().toLowerCase();
+
+            if (/ping|sub|niver|aniver|mondolis|mondolís/.test(commandName)) {
+                message.reply(`Agora eu só respondo a comandos usando \`/\`, e não \`${config.prefixo}\`\nTente usar \`/${commandName}\``);
+            }
+        }
+
         // caso o bot leia "yoichi" no chat
         if (message.content.toLowerCase().includes("yoichi")) {
 

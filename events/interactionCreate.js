@@ -1,7 +1,7 @@
 module.exports = {
     name: 'interactionCreate',
     execute(interaction) {
-        console.log(`:: ${interaction.user.tag} ativou uma interação em #${interaction.channel.name}`);
+        console.log(`\n:: ${interaction.user.tag} ativou uma interação em #${interaction.channel.name}`);
         // console.log(interaction);
 
         if (!interaction.isCommand()) return;
