@@ -1,4 +1,6 @@
 {
+    "clientId": "123456789",
+    "guildId": "987654321",
     "token": "token.do.discord.aqui",
     "prefixo": "!",
     "servidoresAutorizados": [

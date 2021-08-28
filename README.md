@@ -14,6 +14,8 @@ Pull requests são muito bem vindas!
 - [Node.js](https://nodejs.org/)
 - Um Aplicativo com Bot no [portal de desenvolvimento do Discord](https://discord.com/developers/applications)
 - Uma base (planilha) no Airtable seguindo [esse schema](https://airtable.com/shr4aG6NiuZKNQ7Az), você pode duplicar essa base, caso necessário!
+- Priviledged Intents
+  - O Discord agora precisa que você habilite permissões para ler mensagens do servidor através do portal de desenvolvedor. Navegue até `https://discord.com/developers/applications/<application_id>/bot` e marque as opções de membros. Isso serve pro comando de purgerole e pras reações à menções do Yoichi.
 
 ### Dev environment:
 - Clone o repositório
