@@ -1,53 +1,52 @@
 const fetch = require('node-fetch');
-const config = require("../config.json");
+const { Permissions } = require('discord.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
-    name: 'avatar',
-    aliases: ['pfp', 'icon'],
-    description: 'Troca o avatar do Bot',
-    execute(message, args) {
+    data: new SlashCommandBuilder()
+        .setName('avatar')
+        .setDescription('Troca o avatar do bot')
+        .addStringOption(option =>
+            option.setName('url')
+                .setDescription('Link pro novo avatar')
+                .setRequired(true)
+        ),
+    async execute(interaction) {
 
-        // Se a mensagem NÃO vier de:
-        // - Um usuário que tenha permissão de Administrador
-        // - Um servidor autorizado
-        // simultaneamente, cancela execução do comando
-        if (!(config.servidoresAutorizados.includes(message.channel.guild.id) && message.member.hasPermission('ADMINISTRATOR'))) {
-            console.log('\n\n:: [WARN 5] Avatar: Alguém tentou usar o comando de Avatar, mas não tem permissão de admin em nenhum servidor autorizado');
-            return message.reply(`Você não manda em mim!! <${config.emoteBrabo}>`);
+        // checa se o membro é manager
+        if (!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
+            console.log('   :: [avatar]: Usuário sem permissão executou o comando. Abortando.');
+            return interaction.reply({ content: 'Você não tem permissão pra isso! Você não manda em mim!', ephemeral: true });
         }
 
-        // verifica se a mensagem tem um argumento. Se não tiver, cancela execução do comando
-        if (!args.length) {
-            // se não tiver um argumento na mensagem
-            console.error("\n\n:: [ERRO 1] Avatar: Usuário não enviou um argumento");
-            return message.reply(`Trocar pra o que? Manda a foto, né!`);
-        }
+        const url = interaction.options.getString('url');
 
         // verifica se o argumento é um link
-        fetch(args[0])
+        fetch(url)
             .then(res => {
 
                 // se não for uma imagem, cancela execução do comando
                 if (!res.headers.get('content-type').startsWith('image')) {
-                    console.error(`\n\n:: [ERRO 3] Avatar: Link não é uma imagem`);
-                    return message.reply(`Tem que ser uma imagem, né! <${config.emoteBrabo}>`);
+                    console.error(`   :: [Avatar - Erro] Link não é uma imagem`);
+                    return interaction.reply({ content: 'Tem que ser um link de uma imagem, né!', ephemeral: true });
                 }
 
-                // Se você chegou aqui, é uma imagem! Finalmente!
-                console.log(`\n\n:: [INFO] Alterando avatar para ${args[0]}`);
-
                 // Tenta trocar o avatar
-                message.client.user.setAvatar(args[0]).catch((error) => {
-                    console.error(`\n\n:: [ERRO 4] Avatar: Erro ao tentar trocar o avatar\n    ${error}`);
-                    return message.reply(`Não consigo! <${config.emoteBrabo}>`);
-                });
-                return message.reply(`Trocando meu avatar! <${config.emoteEnvergonhado}>`);
+                interaction.client.user.setAvatar(url)
+                    .then(user => {
+                        console.log(`   :: [avatar]: Trocando avatar do bot para ${url}`);
+                        return interaction.reply({ content: 'Trocando avatar!', ephemeral: true });
+                    })
+                    .catch((error) => {
+                        console.error(`   :: [Avatar - Erro] Erro ao tentar trocar o avatar\n   ${error}`);
+                        return interaction.reply({ content: 'Erro ao trocar o avatar', ephemeral: true });
+                    });
 
             })
             .catch((error) => {
                 // se o fetch falhou, é pq o argumento não é um link.
-                console.error(`\n\n:: [ERRO 2] Avatar: Argumento não é um link\n    ${error}`);
-                return message.reply(`Tem que ser um link de uma imagem, né! <${config.emoteBrabo}>`);
+                console.error(`   :: [Avatar - Erro] Argumento não é um link\n   ${error}`);
+                return interaction.reply({ content: 'Tem q ser um link né o carai', ephemeral: true });
             });
 
     },

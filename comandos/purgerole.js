@@ -7,7 +7,7 @@ module.exports = {
         .setDescription('Remove todo mundo de uma determinada role')
         .addRoleOption(option =>
             option.setName('role')
-                .setDescription('A role / cargo pra tirar todo mundo')
+                .setDescription('A role pra tirar todo mundo')
                 .setRequired(true)
         ),
     async execute(interaction) {
@@ -15,7 +15,7 @@ module.exports = {
         var role;
 
         // aqui a gente divide o código em 2 partes pra pegar a role desejada, dependendo se o comando foi executado via cron, ou via interação
-        
+
         // Se a interação NÃO possui um membro, ela veio o cron configurado no ../events/ready.js
         // o cron 
         if (!interaction.member) {
