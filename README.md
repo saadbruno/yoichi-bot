@@ -1,11 +1,14 @@
 # Yoichi Bot
 Um bot feito de brincadeira para o Discord do [Monastério Gentileza](https://discord.gg/cyWp3KEwtc), de Monge Han, personificando o Yoichi e adicionando funções extras.
 
-![screenshot do bot em funcionamento](https://user-images.githubusercontent.com/23201434/111733997-ef1b2d00-8857-11eb-85e9-3550ddc9c4cf.png)
+![image](https://user-images.githubusercontent.com/23201434/131280096-bbf7ecaa-691f-4bf6-b6cf-1e8df5884fef.png)
+![image](https://user-images.githubusercontent.com/23201434/131280108-1400a8de-f87e-4217-ae1d-f74f4ccd0976.png)
 
 ## Recursos:
-- Reações a menções de "Yoichi", "Bom dia, Yoichi", entre outros
-- Páginas de mondolís. Ex: `!mondolis cap 1 pag 2`
+- Reações a menções de "Yoichi", "Bom dia, Yoichi", entre outros.
+- Mostra páginas de mondolís.
+- Dá a role de Aniversariante pros aniversariantes do dia (e anuncia no #Megafone).
+- Mostra como linkar a conta da Twitch com o Discord.
 
 ## Desenvolvimento:
 Pull requests são muito bem vindas!
