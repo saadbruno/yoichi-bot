@@ -21,16 +21,18 @@ Pull requests são muito bem vindas!
 - Clone o repositório
 - Copie o `config.json.example` para `config.json`
 - Edite a `config.json` com os dados necessários
+  - `clientId`: O ID do seu aplicativo no [portal de desenvolvimento do Discord](https://discord.com/developers/applications). Só serve para registrar os comandos na API do Discord. Quando o bot está rodando, ele usa o próprio client ID.
+  - `guildId`: O ID da guild principal do bot. Isso vai ser usado pra registrar os comandos, e pra tarefas como as roles de aniversário e da contagem.
   - `token`: Token pessoal do bot criado no [portal de desenvolvimento do Discord](https://discord.com/developers/applications)
-  - `servidoresAutorizados`: Alguns comandos (como o `!avatar`) necessitam que você seja administrador de algum dos servidores listados aqui.
+  - `prefixo`: DESCONTINUADO: Agora o bot usa os comandos nativos com `/` do Discord. Ainda está aqui pra responder às mensagens de migração.
   - `emoteBrabo` e `emoteEnvergonhado`: São os emotes que o Yoichi reage em casos específicos. Você pode incluir um emoji aqui (como no exemplo) ou algum emote personalizado do Discord (ex: `:yoichibrabo:822537986428239893`)
   - `airtableKey`: Sua chave de API do Airtable, disponível [na sua conta](https://airtable.com/account)
   - `airtableBase`: O ID da sua base (planilha) do Airtable, disponível na [documentação do Airtable](https://airtable.com/api)
-  - `guildAniversario`: O ID do servidor que a role de aniversariante será adicionada
   - `canalAniversario`: O ID do canal que o bot vai postar as mensagens de aniversário
   - `roleAniversario`: O ID da role de aniversariante
   - `roleCounting`: A role de "Não sabe contar". O bot remove essa role de todos os membros em todo dia 1 de cada mês
 - Instale as dependencias com `npm install`
+- Registre os comandos com `node deploy-commands.js`
 - Rode o bot com o comando `node index.js`
 
 ## Links úteis

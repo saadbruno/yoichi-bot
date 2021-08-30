@@ -3,15 +3,10 @@
     "guildId": "987654321",
     "token": "token.do.discord.aqui",
     "prefixo": "!",
-    "servidoresAutorizados": [
-        "111222333444555666",
-        "769993479220232272"
-    ],
     "emoteBrabo": "😠",
     "emoteEnvergonhado": "😳",
     "airtableKey": "keyAAABBBCCCDDDEE",
     "airtableBase": "appFFFGGGHHHIIIJJ",
-    "guildAniversario": "000000000000000",
     "canalAniversario": "111111111111111",
     "roleAniversario": "2222222222222222",
     "roleCounting": "88888888888888"
