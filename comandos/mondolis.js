@@ -1,94 +1,54 @@
 const config = require("../config.json");
 var Airtable = require('airtable');
-
-var Airtable = require('airtable');
 var base = new Airtable({ apiKey: config.airtableKey }).base(config.airtableBase);
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
-	name: 'mondolis',
-	aliases: ['mondolís'],
-	description: 'Posta o link de Mondolís no Tapas',
-	execute(message, args) {
+    data: new SlashCommandBuilder()
+        .setName('mondolís')
+        .setDescription('Leia Mondolís!')
+        .addIntegerOption(option => option.setName('capitulo').setDescription('Escolha um capítulo'))
+        .addStringOption(option => option.setName('pagina').setDescription('Escolha uma página')),
+    async execute(interaction) {
 
-		// se o usuário não incluiu nenhuma página, apenas posta o link do tapas
-		if (!args.length) {
-			return message.channel.send('Leia Mondolís!\nhttps://tapas.io/series/Mondolis-PTBR/info');
-		}
+        var cap = interaction.options.getInteger('capitulo');
+        var pag = interaction.options.getString('pagina');
 
-		// o usuário também pode pedir uma pagina específica, que bisca numa planilha do AirTable
+        // se o comando foi utilizado sem argumentos de capitulo e página, manda o link do tapas
+        if (!cap && !pag) {
+            return interaction.reply({ content: 'Leia Mondolís!\nhttps://tapas.io/series/Mondolis-PTBR/info' });
+        }
 
-		// vamos primeiro formatar os argumentos considerando diversos inputs diferentes do usuário
-		// exemplo: !mondolis c 1 p 2
-		//			!mondolis cap 1 pag 2
-		//			!mondolis capitulo 1 pagina 2
-		// Todos esses comandos devem funcioanr igualmente
+        // se o comando não temn página, manda o link do capítulo inteiro.
+        // no airtable, o link do capitulo inteiro está listado como página "capitulo", então a gente usa essa string
+        if (!pag) {
+            pag = 'capitulo-inteiro';
+        }
 
-		// pagCap é o objeto que contém o número do capítulo e da página que o usuário enviou, e será usado pra buscar a página no Airtable.
-		// o formato final do pagCap deve ser {"c": "X", "p": "Y"}, onde X e Y são números
-		var pagCap = {};
+        // pega linha no airtable relativa à página e capítulos solicitados
+        base('mondolis').select({
+            maxRecords: 1,
+            view: 'Grid view',
+            filterByFormula: `AND({capitulo} = '${cap}', {pagina} = '${pag}', {url} != '') `,
+        }).firstPage(function (err, records) {
+            if (err) { console.error(err); return; }
+            if (!records.length) {
+                return interaction.reply({ content: `Não encontrei esse capítulo ou página <${config.emoteBrabo}>`, ephemeral: true });
+            }
+            records.forEach(function (record) {
+                console.log('   :: [Mondolís] Retirado do AirTable:', record.get('url'));
 
-		// caso o primeiro argumento seja tudo junto, tipo c1p2 ou c2p30
-		if (/c([0-9]+)p([0-9]+)/i.test(args[0])) {
-			const cpSplit = args[0].split(/c|p/);
-			pagCap = {
-				"c": cpSplit[1],
-				"p": cpSplit[2]
-			};
-		} else {
+                // se a pagina for o capitulo-inteiro (link do capítulo inteiro), a gente manda só o link
+                if (pag == 'capitulo-inteiro') {
+                    return interaction.reply({ content: `Mondolís: Capítulo ${cap}\n${record.get('url')}` }); 
+                }
+                // reply com página e capítulos inteiros
+                return interaction.reply({
+                    content: `Mondolís: Capítulo ${cap}, Página ${pag}`,
+                    files: [record.get('url')]
+                })
+            });
+        });
 
-		// argumento não foi tudo junto. Deve ser separado então. Vamos padronizar "cap", "capítulo", "pag", "página", etc
-			for (var i = 0; i < args.length; i++) {
-				switch (args[i].toLowerCase()) {
-					case 'capitulo':
-					case 'capítulo':
-					case 'cap':
-						args[i] = 'c';
-						break;
-
-					case 'página':
-					case 'pagina':
-					case 'pág':
-					case 'pag':
-						args[i] = 'p';
-						break;
-
-					default:
-						break;
-				}
-			}
-
-			// agora vamos associar o número enviado ao lado de cada um dos argumentos (página e capítulo)
-			for (let i = 0; i < args.length; i++) {
-				if (args[i] == 'p' || args[i] == 'c') {
-					const j = i + 1;
-					pagCap[args[i]] = args[j];
-				}
-			}
-
-		}
-
-		// Verifica se temos argumentos c e p
-		if (!pagCap.c || !pagCap.p) {
-			console.error(`\n\n:: Faltando argumentos de capítulo ou página`)
-			return message.channel.send(`Defina uma página e capítulo, tipo \`!mondolis cap 3 pag 1\` <${config.emoteBrabo}>`);
-		}
-
-		// pega linha no airtable relativa à página e capítulos solicitados
-		base('mondolis').select({
-			maxRecords: 1,
-			view: 'Grid view',
-			filterByFormula: `AND({capitulo} = '${pagCap.c}', {pagina} = '${pagCap.p}', {url} != '') `,
-		}).firstPage(function (err, records) {
-			if (err) { console.error(err); return; }
-			if (!records.length) {
-				return message.channel.send(`Não encontrei essa página <${config.emoteBrabo}>`);
-			}
-			records.forEach(function (record) {
-				console.log('\n:: Retrieved', record.get('url'));
-				message.channel.send(`Mondolís: Capítulo ${pagCap.c}, Página ${pagCap.p}\n${record.get('url')}`)
-			});
-		});
-
-
-	},
+    },
 };

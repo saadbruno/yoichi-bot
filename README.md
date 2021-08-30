@@ -1,11 +1,14 @@
 # Yoichi Bot
 Um bot feito de brincadeira para o Discord do [Monastério Gentileza](https://discord.gg/cyWp3KEwtc), de Monge Han, personificando o Yoichi e adicionando funções extras.
 
-![screenshot do bot em funcionamento](https://user-images.githubusercontent.com/23201434/111733997-ef1b2d00-8857-11eb-85e9-3550ddc9c4cf.png)
+![image](https://user-images.githubusercontent.com/23201434/131280096-bbf7ecaa-691f-4bf6-b6cf-1e8df5884fef.png)
+![image](https://user-images.githubusercontent.com/23201434/131280108-1400a8de-f87e-4217-ae1d-f74f4ccd0976.png)
 
 ## Recursos:
-- Reações a menções de "Yoichi", "Bom dia, Yoichi", entre outros
-- Páginas de mondolís. Ex: `!mondolis cap 1 pag 2`
+- Reações a menções de "Yoichi", "Bom dia, Yoichi", entre outros.
+- Mostra páginas de mondolís.
+- Dá a role de Aniversariante pros aniversariantes do dia (e anuncia no #Megafone).
+- Mostra como linkar a conta da Twitch com o Discord.
 
 ## Desenvolvimento:
 Pull requests são muito bem vindas!
@@ -14,21 +17,25 @@ Pull requests são muito bem vindas!
 - [Node.js](https://nodejs.org/)
 - Um Aplicativo com Bot no [portal de desenvolvimento do Discord](https://discord.com/developers/applications)
 - Uma base (planilha) no Airtable seguindo [esse schema](https://airtable.com/shr4aG6NiuZKNQ7Az), você pode duplicar essa base, caso necessário!
+- Priviledged Intents
+  - O Discord agora precisa que você habilite permissões para ler mensagens do servidor através do portal de desenvolvedor. Navegue até `https://discord.com/developers/applications/<application_id>/bot` e marque as opções de membros. Isso serve pro comando de purgerole e pras reações à menções do Yoichi.
 
 ### Dev environment:
 - Clone o repositório
 - Copie o `config.json.example` para `config.json`
 - Edite a `config.json` com os dados necessários
+  - `clientId`: O ID do seu aplicativo no [portal de desenvolvimento do Discord](https://discord.com/developers/applications). Só serve para registrar os comandos na API do Discord. Quando o bot está rodando, ele usa o próprio client ID.
+  - `guildId`: O ID da guild principal do bot. Isso vai ser usado pra registrar os comandos, e pra tarefas como as roles de aniversário e da contagem.
   - `token`: Token pessoal do bot criado no [portal de desenvolvimento do Discord](https://discord.com/developers/applications)
-  - `servidoresAutorizados`: Alguns comandos (como o `!avatar`) necessitam que você seja administrador de algum dos servidores listados aqui.
+  - `prefixo`: DESCONTINUADO: Agora o bot usa os comandos nativos com `/` do Discord. Ainda está aqui pra responder às mensagens de migração.
   - `emoteBrabo` e `emoteEnvergonhado`: São os emotes que o Yoichi reage em casos específicos. Você pode incluir um emoji aqui (como no exemplo) ou algum emote personalizado do Discord (ex: `:yoichibrabo:822537986428239893`)
   - `airtableKey`: Sua chave de API do Airtable, disponível [na sua conta](https://airtable.com/account)
   - `airtableBase`: O ID da sua base (planilha) do Airtable, disponível na [documentação do Airtable](https://airtable.com/api)
-  - `guildAniversario`: O ID do servidor que a role de aniversariante será adicionada
   - `canalAniversario`: O ID do canal que o bot vai postar as mensagens de aniversário
   - `roleAniversario`: O ID da role de aniversariante
   - `roleCounting`: A role de "Não sabe contar". O bot remove essa role de todos os membros em todo dia 1 de cada mês
 - Instale as dependencias com `npm install`
+- Registre os comandos com `node deploy-commands.js`
 - Rode o bot com o comando `node index.js`
 
 ## Links úteis
