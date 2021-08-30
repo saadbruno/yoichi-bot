@@ -4,38 +4,49 @@ var Airtable = require('airtable');
 var base = new Airtable({ apiKey: config.airtableKey }).base(config.airtableBase);
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
-// - pega aniversariantes de ontem e hoje no airtable
-// - separa eles em 2 arrays
-// - confere se eles tão no discord
-// - dá a role pros hojeversarios
-// - remove role dos ontemversarios
-// - reply com os hojeversarios
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('aniversário')
         .setDescription('Dá os parabéns ao(s) aniversariante(s) do dia!'),
-    async execute(interaction) {
+    async execute(interaction, guild = "", cronAction = "") {
 
-        // Cria um objeto com a role de aniversariante. A gente vai adicionar essa role pra quem faz aniversário hoje, e remove a role pra quem fez aniversário ontem
-        var guild = interaction.client.guilds.cache.get(config.guildAniversario);
+        if (!guild) {
+            console.log(`   :: [aniversario] Guild está vazia. Usando a guild da interação`)
+            var guild = interaction.client.guilds.cache.get(config.guildId);
+        } else {
+            console.log(`::[aniversario] Executando via cron com argumento ${cronAction}`);
+        }
+
         let role = guild.roles.cache.find(r => r.id === config.roleAniversario);
 
-        // cria variaveis pra data de hoje e ontem. Elas são separadas porque fica mais fácil de veriifcar o dia e o mês separado do ano (a gente não liga muito pro ano)
-        // a gente pega a data de ontem também pra tirar a Role de quem fez aniversário ontem
+        // gera as datas de hoje
         let dates = getDates();
 
         console.log(`   :: [aniversario] Usando datas:`, dates);
 
         // pega os aniversariantes do airtable;
         const aniversariantes = await getAniversariantes(dates);
-        console.log("   aniversariantes", aniversariantes);
+        console.log("   :: [aniversário] Resultado do AirTable: ", aniversariantes);
 
+        // confere se os membros q pegamos do airtable pertencem à nossa guild no discord
         const checkedMembers = await checkMembers(aniversariantes, guild);
         // console.log(checkedMembers);
 
+        // adiciona / remove as roles
         manageRoles(role, checkedMembers);
-        replyToInteraction(interaction, checkedMembers);
+
+        // se o cron é só pra dar as roles (a q é executada meia noite), então terminamos por aqui.
+        if (cronAction == "giveRoles") return;
+
+        // se foi executado via cron, com o argumento "post", então postamos no canalAniversario e encerramos a execução
+        if (cronAction == "post") {
+            var canalAniversario = interaction.channels.cache.get(config.canalAniversario);
+            // console.log(canalAniversario);
+            return postToChannel(canalAniversario, checkedMembers);
+        }
+
+        // se chegamos até aqui, vamos responder quem enviou o comando /aniversário
+        return replyToInteraction(interaction, checkedMembers);
     },
 };
 
@@ -43,7 +54,8 @@ module.exports = {
 // funções
 // =======
 
-// função pra criar array com as datas de ontem e hoje usando o moment
+// cria variaveis pra data de hoje e ontem. Elas são separadas porque fica mais fácil de veriifcar o dia e o mês separado do ano (a gente não liga muito pro ano)
+// a gente pega a data de ontem também pra tirar a Role de quem fez aniversário ontem
 function getDates() {
     var dates = {
         "hoje": {
@@ -93,7 +105,6 @@ async function getAniversariantes(dates) {
     });
 }
 
-
 // função que confere se os aniversariantes fazem parte da guild no discord, e já separa eles entre 2 arrays, ontem e hoje
 async function checkMembers(aniversariantes, guild) {
 
@@ -137,18 +148,39 @@ function manageRoles(role, members) {
 }
 
 // função pra responder à interação do usuário q iniciou o comando
-async function replyToInteraction(interaction, members){
+async function replyToInteraction(interaction, members) {
 
     if (members.hoje.length === 0) {
-        return interaction.reply({content: "Ninguém faz aniversário hoje!", ephemeral: true});
+        return interaction.reply({ content: "Ninguém faz aniversário hoje!", ephemeral: true });
     }
 
+    let reply = createReply(members.hoje);
+
+    return interaction.reply({ content: reply });
+}
+
+// função pra responder à interação do usuário q iniciou o comando
+async function postToChannel(canal, members) {
+
+    console.log(`   ::[aniversario] enviando mensagem no ${canal.name}`);
+
+    if (members.hoje.length === 0) return;
+
+    let reply = createReply(members.hoje);
+
+    canal.send(reply)
+        .then(message => console.log(`   ::[aniversario]  Mensagem enviada: ${message.content}`))
+        .catch(console.error);
+    return;
+}
+
+// cria mensagem com os membros selecionados
+function createReply(members) {
     let reply = "Parabéns";
-    members.hoje.forEach(member => {
+    members.forEach(member => {
         reply += ` <@${member.id}>`;
     });
-    reply +=` <${config.emoteBrabo}>`;
+    reply += ` <${config.emoteBrabo}>`;
 
-    return interaction.reply({content: reply});
-
+    return reply;
 }

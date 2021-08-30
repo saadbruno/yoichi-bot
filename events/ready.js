@@ -17,11 +17,35 @@ module.exports = {
         });
 
         // inicia os cronjobs
+
+        // cron q remove o roleCounting todo dia 1 do mês
         new CronJob(
             "0 0 0 1 * *",
             () => {
                 let role = guild.roles.cache.find(r => r.id === config.roleCounting);
                 client.commands.get("purgerole").execute(role);
+            },
+            null,
+            true,
+            "America/Sao_Paulo"
+        );
+
+        // cron q posta a mensagem de aniversário as 10 da manhã
+        new CronJob(
+            "0 0 10 * * *",
+            () => {
+                client.commands.get("aniversário").execute(client, guild, "post");
+            },
+            null,
+            true,
+            "America/Sao_Paulo"
+        );
+
+        // cron que dá a role de aniversariante todo dia meia noite
+        new CronJob(
+            "0 0 0 * * *",
+            () => {
+                client.commands.get("aniversário").execute(client, guild, "giveRoles");
             },
             null,
             true,
