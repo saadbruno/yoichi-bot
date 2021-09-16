@@ -56,7 +56,7 @@ module.exports = {
         }
 
         // caso alguém mencione o bot no chat
-        if (message.mentions.has(message.client.user)) {
+        if (message.mentions.has(message.client.user) && message.mentions.everyone == false) {
 
             // e caso tenha "dia" na mensagem
             if (message.content.toLowerCase().includes("dia")) {
