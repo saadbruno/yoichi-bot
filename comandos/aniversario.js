@@ -14,7 +14,7 @@ module.exports = {
             console.log(`   :: [aniversario] Guild está vazia. Usando a guild da interação`)
             var guild = interaction.client.guilds.cache.get(config.guildId);
         } else {
-            console.log(`::[aniversario] Executando via cron com argumento ${cronAction}`);
+            console.log(`   ::[aniversario] Executando via cron com argumento ${cronAction}`);
         }
 
         let role = guild.roles.cache.find(r => r.id === config.roleAniversario);
