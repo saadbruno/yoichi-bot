@@ -33,7 +33,7 @@ module.exports = {
         }).firstPage(function (err, records) {
             if (err) { console.error(err); return; }
             if (!records.length) {
-                return interaction.reply({ content: `Não encontrei esse capítulo ou página <${config.emoteBrabo}>`, ephemeral: true });
+                return interaction.reply({ content: `Não encontrei esse capítulo ou página <${config.emoteBrabo}>\nVocê pode encontrar Mondolís por completo no Tapas: <https://tapas.io/series/Mondolis-PTBR/info>`, ephemeral: true });
             }
             records.forEach(function (record) {
                 console.log('   :: [Mondolís] Retirado do AirTable:', record.get('url'));
@@ -44,7 +44,7 @@ module.exports = {
                 }
                 // reply com página e capítulos inteiros
                 return interaction.reply({
-                    content: `Mondolís: Capítulo ${cap}, Página ${pag}`,
+                    content: `Mondolís: **Capítulo ${cap}**, **Página ${pag}**\nLeia Mondolís no Tapas: <https://tapas.io/series/Mondolis-PTBR/info>`,
                     files: [record.get('url')]
                 })
             });
