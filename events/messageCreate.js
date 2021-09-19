@@ -18,6 +18,7 @@ module.exports = {
             const commandName = args.shift().toLowerCase();
 
             if (/ping|sub|niver|aniver|mondolis|mondolís/.test(commandName)) {
+                console.log(`\n:: ${message.author.tag} tentou enviar um comando com ! em #${message.channel.name}:\n${message.content}`);
                 message.reply(`Agora eu só respondo a comandos usando \`/\`, e não \`${config.prefixo}\`\nTente usar \`/${commandName}\``);
             }
         }
@@ -30,33 +31,43 @@ module.exports = {
 
             // respostas adicionais. Se ouvir "fuckers", "dia", ou "noite".
             if (message.content.toLowerCase().includes("fucker")) {
+                console.log(`\n:: ${message.author.tag} enviou mensagem com Yoichi e Fucker em #${message.channel.name}:\n${message.content}`);
                 var r = ~~(Math.random() * replies.fuckers.length);
                 return message.reply(replies.fuckers[r]);
             }
             if (message.content.toLowerCase().includes("dia")) {
+                console.log(`\n:: ${message.author.tag} enviou mensagem com Yoichi e Dia em #${message.channel.name}:\n${message.content}`);
                 var r = ~~(Math.random() * replies.dia.length);
                 return message.reply(replies.dia[r] + "<" + config.emoteBrabo + ">");
             }
             if (message.content.toLowerCase().includes("noite")) {
+                console.log(`\n:: ${message.author.tag} enviou mensagem com Yoichi e Noite em #${message.channel.name}:\n${message.content}`);
                 var r = ~~(Math.random() * replies.noite.length);
                 return message.reply(replies.noite[r]);
             }
+
+            console.log(`\n:: ${message.author.tag} enviou mensagem com Yoichi em #${message.channel.name}:\n${message.content}`);
+
         }
 
 
         // caso o bot leia "calichi" no chat
         if (message.content.toLowerCase().includes("calichi")) {
+            console.log(`\n:: ${message.author.tag} enviou mensagem com Calichi em #${message.channel.name}:\n${message.content}`);
             var r = ~~(Math.random() * replies.calichi.length);
             return message.reply(replies.calichi[r]);
         }
 
         // caso o bot leia "caleb" no chat
         if (message.content.toLowerCase().includes("caleb")) {
+            console.log(`\n:: ${message.author.tag} enviou mensagem com Caleb em #${message.channel.name}:\n${message.content}`);
             message.react(config.emoteEnvergonhado);
         }
 
         // caso alguém mencione o bot no chat
         if (message.mentions.has(message.client.user) && message.mentions.everyone == false) {
+
+            console.log(`\n:: ${message.author.tag} mencionou o bot em #${message.channel.name}:\n${message.content}`);
 
             // e caso tenha "dia" na mensagem
             if (message.content.toLowerCase().includes("dia")) {
