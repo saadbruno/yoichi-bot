@@ -38,6 +38,28 @@ Pull requests são muito bem vindas!
 - Registre os comandos com `node deploy-commands.js`
 - Rode o bot com o comando `node index.js`
 
+## Docker
+Atualmente o bot não conta com um setup de Docker para Dev, mas conta com um para produção.
+### Build
+- Para buildar a imagem, rode `make build` ou então `docker build . -t saadbruno/yoichi-bot`
+
+### Run
+- Crie um arquivo `config.json` com base no [repositorio](https://github.com/saadbruno/yoichi-bot/blob/main/config.json.example)
+
+- Opção 1: Docker run
+`docker run -v $(pwd)/config.json:/usr/src/app/config.json --name yoichi-bot saadbruno/yoichi-bot`
+
+- Opção 2: Docker Compose
+```
+version: '3.5'
+services:
+  yoichi-bot:
+    image: saadbruno/yoichi-bot
+    restart: unless-stopped
+    volumes:
+      - ./config.json:/usr/src/app/config.json
+```
+
 ## Links úteis
 - [Discord.js](https://discord.js.org/)
 - [Airtable.js](https://github.com/Airtable/airtable.js)
