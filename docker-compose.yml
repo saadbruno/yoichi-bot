@@ -1,0 +1,6 @@
+version: '3.5'
+services:
+  yoichi-bot:
+    image: saadbruno/yoichi-bot
+    volumes:
+      - ./config.json:/usr/src/app/config.json
