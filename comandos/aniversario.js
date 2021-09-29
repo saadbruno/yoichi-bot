@@ -14,7 +14,7 @@ module.exports = {
             console.log(`   :: [aniversario] Guild está vazia. Usando a guild da interação`)
             var guild = interaction.client.guilds.cache.get(config.guildId);
         } else {
-            console.log(`   ::[aniversario] Executando via cron com argumento ${cronAction}`);
+            console.log(`   :: [aniversario] Executando via cron com argumento ${cronAction}`);
         }
 
         let role = guild.roles.cache.find(r => r.id === config.roleAniversario);
@@ -92,7 +92,7 @@ async function getAniversariantes(dates) {
                 }
 
                 // bota o aniversariante no array
-                aniversariantes.push({ "nome": record.get('Nome'), "id": record.get('Discord ID'), "dia": dia });
+                aniversariantes.push({ "nome": record.get('Nome'), "id": record.get('Discord ID').toString(), "dia": dia });
 
             });
             fetchNextPage();
@@ -162,14 +162,14 @@ async function replyToInteraction(interaction, members) {
 // função pra responder à interação do usuário q iniciou o comando
 async function postToChannel(canal, members) {
 
-    console.log(`   ::[aniversario] enviando mensagem no ${canal.name}`);
+    console.log(`   :: [aniversario] enviando mensagem no ${canal.name}`);
 
     if (members.hoje.length === 0) return;
 
     let reply = createReply(members.hoje);
 
     canal.send(reply)
-        .then(message => console.log(`   ::[aniversario]  Mensagem enviada: ${message.content}`))
+        .then(message => console.log(`   :: [aniversario]  Mensagem enviada: ${message.content}`))
         .catch(console.error);
     return;
 }
