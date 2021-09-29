@@ -26,11 +26,11 @@ module.exports = {
 
         // pega os aniversariantes do airtable;
         const aniversariantes = await getAniversariantes(dates);
-        console.log("   :: [aniversário] Resultado do AirTable: ", aniversariantes);
+        console.log("   :: [aniversário] Resultado do AirTable:\n", aniversariantes);
 
         // confere se os membros q pegamos do airtable pertencem à nossa guild no discord
         const checkedMembers = await checkMembers(aniversariantes, guild);
-        // console.log(checkedMembers);
+        // console.log("   :: [aniversário] Resultado do checkedMembers: ", checkedMembers);
 
         // adiciona / remove as roles
         manageRoles(role, checkedMembers);
@@ -107,15 +107,21 @@ async function getAniversariantes(dates) {
 
 // função que confere se os aniversariantes fazem parte da guild no discord, e já separa eles entre 2 arrays, ontem e hoje
 async function checkMembers(aniversariantes, guild) {
+    console.log(`   :: [aniversario] checkMembers: Rodando checkMembers com aniversariantes:\n`, aniversariantes);
 
     // cria o array q será retornado ao final
     var checkedMembers = { "hoje": [], "ontem": [] };
 
     // cria o loop
     const promises = aniversariantes.map(async (member) => {
-        const discordMember = await guild.members.fetch(member.id).catch(error => console.error(`   :: [aniversário] WARN: Usuário ${member.nome} com ID ${member.id} não encontrado.`));
+        if (!member.id) return;
+        console.log(`   :: [aniversario] checkMembers: Pegando membro ${member.nome} (com ID ${member.id}) na API do Discord`);
+        const discordMember = await guild.members.fetch(member.id).catch(error => console.error(`   :: [aniversário] WARN: checkMembers: Usuário ${member.nome} com ID ${member.id} não encontrado.`));
 
-        if (!discordMember) return;
+        if (!discordMember) {
+            console.log(`   :: [aniversario] checkMembers: Membro ${member.nome} (com ID ${member.id}) não encontrado na API do Discord. Returning`);            
+            return;
+        }
 
         if (member.dia == "hoje") {
             checkedMembers.hoje.push(discordMember);
@@ -133,13 +139,18 @@ async function checkMembers(aniversariantes, guild) {
 
 // função que pega a lista de usuários (ja organizada pela função checkMembers) e adiciona / remove as roles
 function manageRoles(role, members) {
+    console.log(`   :: [aniversario] manageRoles: Rodando manageRoles`);
     members.hoje.forEach(member => {
+        if(!member.user) { console.log(`   :: [aniversario] manageRoles: aniversariante não encontrado`); return }; // a gente em teoria nunca deveria chegar a essa situação (o check de usuário é feito no checkMembers() ). MAS caso isso aconteça, essa linha previne o bot de crashar.
+
         console.log(`   :: [aniversario] ${member.user.tag} - Adicionando role ${role.name}`)
         member.roles.add(role)
             .catch(error => console.error(`   :: [aniversario] ERRO: Não foi possivel adicionar a role ${role.name} ao usuário ${member.user.tag}. O bot tem permissão pra fazer isso?\n\n`, error));
     });
 
     members.ontem.forEach(member => {
+        if(!member.user) { console.log(`   :: [aniversario] manageRoles: aniversariante não encontrado`); return }; // a gente em teoria nunca deveria chegar a essa situação (o check de usuário é feito no checkMembers() ). MAS caso isso aconteça, essa linha previne o bot de crashar.
+
         console.log(`   :: [aniversario] ${member.user.tag} - Removendo role ${role.name}`)
         member.roles.remove(role)
             .catch(error => console.error(`   :: [aniversario] ERRO: Não foi possivel adicionar a role ${role.name} ao usuário ${member.user.tag}. O bot tem permissão pra fazer isso?\n\n`, error));
