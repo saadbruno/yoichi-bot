@@ -2,16 +2,54 @@ const config = require("../config.json");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
 
+var pomodoroTimeout;
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('pomodoro')
-        .setDescription('Inicia uma sessão de pomodoro')
-        .addIntegerOption(option => option.setName('duração').setDescription('Duração em minutos do bloco de pomodoro. Padrão: 25 minutos'))
-        .addIntegerOption(option => option.setName('pausa').setDescription('Duração em minutos da pausa. Padrão: 8 minutos'))
-        .addStringOption(option => option.setName('mensagem-de-pausa').setDescription('Opcional: define uma mensagem customizada para o início da pausa'))
-        .addStringOption(option => option.setName('mensagem-de-pomodoro').setDescription('Opcional: define uma mensagem customizada para o início do pomodoro')),
+        .setDescription('Pomodoro!')
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('iniciar')
+                .setDescription('Inicia uma sessão de pomodoro')
+                .addIntegerOption(option => option.setName('duração').setDescription('Duração em minutos do bloco de pomodoro. Padrão: 25 minutos'))
+                .addIntegerOption(option => option.setName('pausa').setDescription('Duração em minutos da pausa. Padrão: 8 minutos'))
+                .addStringOption(option => option.setName('mensagem-de-pausa').setDescription('Opcional: define uma mensagem customizada para o início da pausa'))
+                .addStringOption(option => option.setName('mensagem-de-pomodoro').setDescription('Opcional: define uma mensagem customizada para o início do pomodoro')))
+        .addSubcommand(subcommand =>
+            subcommand
+            .setName('parar')
+            .setDescription('Encerra o pomodoro')),
+
         
     async execute(interaction) {
+
+        const canalTextoPomodoro = interaction.guild.channels.cache.get(config.textoPomodoro);
+        const canalVozPomodoro = interaction.guild.channels.cache.get(config.vozPomodoro);
+        const subcommand = interaction.options._subcommand;
+
+        // console.log(pomodoroTimeout.Timeout._destroyed);
+
+        // Gerencia o comando de parar o pomodoro
+        if(subcommand == "parar") {
+
+            if (!pomodoroTimeout || pomodoroTimeout._destroyed == true) {
+                console.log("   :: [Pomodoro] WARN: Usuário solicitou parar o pomodoro, mas não há nenhum pomodoro em andamento.");
+                return interaction.reply({ content: 'Não há nenhum pomodoro acontecendo no momento', ephemeral: true }); 
+            }
+
+            clearTimeout(pomodoroTimeout);
+            console.log("   :: [Pomodoro] Encerrando pomodoro");
+            await canalTextoPomodoro.send("Pomodoro encerrado");
+            return interaction.reply({ content: 'Encerrando pomodoro!', ephemeral: true });
+        }
+
+        // se chegamos até aqui, o usuário solicitou o início do pomodoro.
+
+        if (pomodoroTimeout && pomodoroTimeout._destroyed == false ) {
+            console.log("   :: [Pomodoro] WARN: Usuário tentou iniciar um pomodoro, mas já existe um pomodoro em andamento.");
+            return interaction.reply({ content: 'Já existe um pomodoro em andamento. Caso queira encerrá-lo, use `/pomodoro parar`', ephemeral: true }); 
+        }
 
         var argumentos = {
             "timer": {
@@ -23,9 +61,6 @@ module.exports = {
                 "pomodoro": interaction.options.getString('mensagem-de-pausa') ?? "🍅 🥰 Início da pausa para descanso!"
             }
         };
-
-        var canalTextoPomodoro = interaction.guild.channels.cache.get(config.textoPomodoro);
-        var canalVozPomodoro = interaction.guild.channels.cache.get(config.vozPomodoro)
 
         console.log(
             `\n   :: [Pomodoro] Iniciando pomodoro:`,
@@ -64,7 +99,7 @@ module.exports = {
             }
 
             // inicia timeout com duração do argumento "duração"
-            setTimeout(function () {
+            pomodoroTimeout = setTimeout(function () {
 
                 // depois da "duração", envia mensagem de pausa
                 canalTextoPomodoro.send(`${argumentos["mensagem"][tipo]}\n${getMentionList()}`)
