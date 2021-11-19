@@ -38,9 +38,16 @@ module.exports = {
                 return interaction.reply({ content: 'Não há nenhum pomodoro acontecendo no momento', ephemeral: true }); 
             }
 
+            const endPomo = new MessageEmbed()
+                .setColor('#1e1e1e')
+                .setTitle('🍅 Pomodoro encerrado')
+                .setTimestamp()
+                .setFooter(interaction.user.tag, interaction.user.avatarURL());
+
+
             clearTimeout(pomodoroTimeout);
             console.log("   :: [Pomodoro] Encerrando pomodoro");
-            await canalTextoPomodoro.send("Pomodoro encerrado");
+            await canalTextoPomodoro.send({ content: getMentionList(), embeds: [endPomo] });
             return interaction.reply({ content: 'Encerrando pomodoro!', ephemeral: true });
         }
 
@@ -48,7 +55,7 @@ module.exports = {
 
         if (pomodoroTimeout && pomodoroTimeout._destroyed == false ) {
             console.log("   :: [Pomodoro] WARN: Usuário tentou iniciar um pomodoro, mas já existe um pomodoro em andamento.");
-            return interaction.reply({ content: 'Já existe um pomodoro em andamento. Caso queira encerrá-lo, use `/pomodoro parar`', ephemeral: true }); 
+            return interaction.reply({ content: `Já existe um pomodoro em andamento.\n🍅Caso queira participar, entre no canal de voz <#${config.vozPomodoro}>\n🛑 Caso queira encerrá-lo, use \`/pomodoro parar\``, ephemeral: true }); 
         }
 
         var argumentos = {
