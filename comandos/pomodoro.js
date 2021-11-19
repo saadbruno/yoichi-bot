@@ -28,14 +28,19 @@ module.exports = {
         const canalVozPomodoro = interaction.guild.channels.cache.get(config.vozPomodoro);
         const subcommand = interaction.options._subcommand;
 
-        // console.log(pomodoroTimeout.Timeout._destroyed);
 
         // Gerencia o comando de parar o pomodoro
         if(subcommand == "parar") {
 
+            // confere se há uum pomodoro em andamento
             if (!pomodoroTimeout || pomodoroTimeout._destroyed == true) {
                 console.log("   :: [Pomodoro] WARN: Usuário solicitou parar o pomodoro, mas não há nenhum pomodoro em andamento.");
                 return interaction.reply({ content: 'Não há nenhum pomodoro acontecendo no momento', ephemeral: true }); 
+            }
+
+            // confere se o usuário está no canal de voz
+            if (!canalVozPomodoro.members.get(interaction.user.id) && canalVozPomodoro.members.size != 0) {
+                return interaction.reply({ content: `ERRO: Entre no canal de voz <#${config.vozPomodoro}> antes de usar esse comando.`, ephemeral: true });
             }
 
             const endPomo = new MessageEmbed()
@@ -44,18 +49,28 @@ module.exports = {
                 .setTimestamp()
                 .setFooter(interaction.user.tag, interaction.user.avatarURL());
 
-
             clearTimeout(pomodoroTimeout);
-            console.log("   :: [Pomodoro] Encerrando pomodoro");
-            await canalTextoPomodoro.send({ content: getMentionList(), embeds: [endPomo] });
+            console.log("   :: [Pomodoro] Encerrando pomodoro via comando");
+            var mentionList = getMentionList();
+            if (mentionList) {
+                await canalTextoPomodoro.send({ content: getMentionList(), embeds: [endPomo] });
+            } else {
+                await canalTextoPomodoro.send({embeds: [endPomo] });
+            }
             return interaction.reply({ content: 'Encerrando pomodoro!', ephemeral: true });
         }
 
-        // se chegamos até aqui, o usuário solicitou o início do pomodoro.
+        // ======= se chegamos até aqui, o usuário solicitou o início do pomodoro. ====== //
 
+        // confere se ja existe um pomodoro em andamento
         if (pomodoroTimeout && pomodoroTimeout._destroyed == false ) {
             console.log("   :: [Pomodoro] WARN: Usuário tentou iniciar um pomodoro, mas já existe um pomodoro em andamento.");
             return interaction.reply({ content: `Já existe um pomodoro em andamento.\n🍅Caso queira participar, entre no canal de voz <#${config.vozPomodoro}>\n🛑 Caso queira encerrá-lo, use \`/pomodoro parar\``, ephemeral: true }); 
+        }
+
+        // confere se o usuário está no canal de voz
+        if (!canalVozPomodoro.members.get(interaction.user.id)) {
+            return interaction.reply({ content: `ERRO: Entre no canal de voz <#${config.vozPomodoro}> antes de usar esse comando.`, ephemeral: true });
         }
 
         var argumentos = {
@@ -78,7 +93,7 @@ module.exports = {
             `\n          Usuários no canal de voz:    ${canalVozPomodoro.members.size}`
         );
 
-        await interaction.reply({ content: `🍅 Iniciando pomodoro em <#${config.textoPomodoro}>`, ephemeral: true });
+        await interaction.reply({ content: `🍅 Iniciando pomodoro em <#${config.textoPomodoro}>`});
 
         const initPomo = new MessageEmbed()
             .setColor('#f76f68')
@@ -107,6 +122,15 @@ module.exports = {
 
             // inicia timeout com duração do argumento "duração"
             pomodoroTimeout = setTimeout(function () {
+
+                if (canalVozPomodoro.members.size == 0) {
+
+                    clearTimeout(pomodoroTimeout);
+                    console.log("   :: [Pomodoro] Encerrando pomodoro por inatividade");
+
+                    const endPomo = new MessageEmbed().setColor('#1e1e1e').setTitle('🍅 Pomodoro encerrado').setTimestamp();
+                    return canalTextoPomodoro.send({embeds: [endPomo] });
+                }
 
                 // depois da "duração", envia mensagem de pausa
                 canalTextoPomodoro.send(`${argumentos["mensagem"][tipo]}\n${getMentionList()}`)
