@@ -61,6 +61,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./config.json:/usr/src/app/config.json
+      - ./data/blacklist.json:/usr/src/app/data/blacklist.json
 ```
 
 ## Links úteis
