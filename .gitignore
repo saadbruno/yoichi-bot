@@ -1,5 +1,6 @@
 # custom bot stuff
 config.json
+data/blacklist.json
 
 # Logs
 logs

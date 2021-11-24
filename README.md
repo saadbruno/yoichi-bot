@@ -34,6 +34,9 @@ Pull requests são muito bem vindas!
   - `canalAniversario`: O ID do canal que o bot vai postar as mensagens de aniversário
   - `roleAniversario`: O ID da role de aniversariante
   - `roleCounting`: A role de "Não sabe contar". O bot remove essa role de todos os membros em todo dia 1 de cada mês
+  - `textoPomodoro`: O ID do canal de texto que o bot posta output do comando Pomodoro
+  - `vozPomodoro`: O ID do canal de voz que o bot checa por participantes do Pomodoro
+- (Opcional) Copie o `data/blacklist.json.example` para `data/blacklist.json` e edite de acordo. Mensagens que contenham qualquer uma das strings definidas nesse arquivo serão automaticamente removidas.
 - Instale as dependencias com `npm install`
 - Registre os comandos com `node deploy-commands.js`
 - Rode o bot com o comando `node index.js`
@@ -58,6 +61,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./config.json:/usr/src/app/config.json
+      - ./data/blacklist.json:/usr/src/app/data/blacklist.json
 ```
 
 ## Links úteis
