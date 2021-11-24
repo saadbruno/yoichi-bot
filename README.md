@@ -9,6 +9,8 @@ Um bot feito de brincadeira para o Discord do [Monastério Gentileza](https://di
 - Mostra páginas de mondolís.
 - Dá a role de Aniversariante pros aniversariantes do dia (e anuncia no #Megafone).
 - Mostra como linkar a conta da Twitch com o Discord.
+- Pomodoro no Discord!
+- Blacklist de palavras (mensagens são removidas automaticamente)
 
 ## Desenvolvimento:
 Pull requests são muito bem vindas!
