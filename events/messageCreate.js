@@ -1,5 +1,12 @@
 const config = require("../config.json");
 const replies = require('../data/replies.json');
+var blacklist = [];
+
+try {
+    var blacklist = require('../data/blacklist.json');
+} catch (ex) {
+    console.log(`[WARN] Arquivo data/blacklist.json não existe. Recurso de blacklist não será usado.`);
+}
 
 module.exports = {
     name: 'messageCreate',
@@ -11,6 +18,13 @@ module.exports = {
         }
 
         // console.log(`:: ${message.author.tag} enviou uma mensagem em #${message.channel.name}: ${message.content}`);
+
+        // Blacklist: Apaga qualquer mensagem que contenha alguma string definida no arquivo ../data/blacklist.json
+        if (blacklist.some(v => message.content.toLowerCase().includes(v))) {
+            message.delete()
+            .then(msg => console.log(`\n:: [Blacklist] Removida mensagem de ${msg.author.username} em #${message.channel.name}:\n   └─ ${msg.content}`))
+            .catch(console.error);
+        }
 
         // UX: Fala pros usuários que os comandos agora são usados com /
         if (message.content.startsWith(config.prefixo)) {
