@@ -1,9 +1,12 @@
 // Esse script pega as atualizações de Presence do Discord.
 // Por enquanto, é só usado para atualizações do Spotify
 
+
+
 module.exports = {
     name: 'presenceUpdate',
-    execute(oldPresence, newPresence) {
+    socket: true,
+    execute(io, oldPresence, newPresence) {
         console.log(`\n:: Nova atualização de Presence`);
 
         // encontra, entre todas as atividades, o Spotify
@@ -25,6 +28,19 @@ module.exports = {
         Album:   ${spotify.assets.largeText}
         Cover:   https://i.scdn.co/image/${spotify.assets.largeImage.slice(8)}
         `);
-        
+
+        // console.log(spotify);
+
+        io.emit('spotify', spotify);
+
+        // io.on('connection', (socket) => {
+        //     console.log(':: Socket.io: a user connected via presenceUpdate');
+        //     // socket.on('load', (msg) => {
+        //     //     console.log('message: ' + msg);
+        //     // });
+        // });
+
+
+
     },
 };

@@ -7,13 +7,13 @@ module.exports = {
     execute(client) {
 
         // posta mensagem de início 
-        console.log(`========= YOICHI BOT =========\n:: Logado como ${client.user.tag}\n:: Online em ${client.guilds.cache.size} servidores \n==============================`);
+        console.log(`:: Logado no Discord como ${client.user.tag}\n:: Online em ${client.guilds.cache.size} servidores do Discord`);
 
         let guild = client.guilds.cache.get(config.guildId);
 
         // adiciona todos usuários ao cache do bit. No momento isso é utilizado no purgerole.
         guild.members.fetch().then((members) => {
-            console.log(`\n:: Adicionados ${members.size} usuários no cache`);
+            console.log(`:: Adicionados ${members.size} usuários do Discord no cache`);
         });
 
         // inicia os cronjobs

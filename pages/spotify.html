@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Yoichi Spotify Overlay</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+
+    <div id="container">
+        <div id="cover-container">
+            <img id="cover" src="" />
+        </div>
+        <div class="info">
+            <div id="title">title</div>
+            <div id="artist">artist</div>
+            <div id="album">album</div>
+            <div id="progress-container">
+                <div id="progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+        socket.emit('load', 'test');
+
+        socket.on('spotify', function (spotify) {
+            console.log(spotify);
+            document.getElementById("title").innerHTML = spotify.state;
+            document.getElementById("artist").innerHTML = spotify.details;
+            document.getElementById("album").innerHTML = spotify.assets.largeText;
+            document.getElementById("cover").src = `https://i.scdn.co/image/${spotify.assets.largeImage.slice(8)}`;
+        });
+
+    </script>
+</body>
+
+</html>
