@@ -11,7 +11,7 @@ module.exports = {
 
         let guild = client.guilds.cache.get(config.guildId);
 
-        // adiciona todos usuários ao cache do bit. No momento isso é utilizado no purgerole.
+        // adiciona todos usuários ao cache do bot. No momento isso é utilizado no purgerole.
         guild.members.fetch().then((members) => {
             console.log(`:: Adicionados ${members.size} usuários do Discord no cache`);
         });

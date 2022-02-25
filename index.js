@@ -1,23 +1,26 @@
 // Require the necessary discord.js classes
 const fs = require('fs');
-const { Client, Collection, Intents } = require('discord.js');
 const config = require('./config.json');
 const package = require('./package.json');
 
-// Arquivos do Express
+console.log(`========= YOICHI BOT v${package.version} =========`);
+
+// modulos do discordjs
+const { Client, Collection, Intents } = require('discord.js');
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_PRESENCES] });
+
+// Modulos do Express
 const express = require('express');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
 
-// Arquivos do Socket.io
+// Modulos do Socket.io
 const { Server } = require("socket.io");
 const io = new Server(server);
 
-console.log(`========= YOICHI BOT v${package.version} =========`);
-
-// Create a new client instance
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_PRESENCES] });
+// modulos customizados
+require('./modulos/spotify')(io, client);
 
 // cria um array com todas os arquivos de eventos
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
@@ -41,6 +44,8 @@ for (const file of eventFiles) {
         }
     }
 }
+
+// client.on('presenceUpdate', (...args) => spotify.update(io, ...args));
 
 // get commands
 client.commands = new Collection();
@@ -68,3 +73,4 @@ app.get('/spotify', (req, res) => {
 server.listen(3000, () => {
     console.log(':: Iniciado servidor web na porta 3000');
 });
+
