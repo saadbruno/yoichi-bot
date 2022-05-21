@@ -9,19 +9,6 @@ console.log(`========= YOICHI BOT v${package.version} =========`);
 const { Client, Collection, Intents } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_PRESENCES] });
 
-// Modulos do Express
-const express = require('express');
-const app = express();
-const http = require('http');
-const server = http.createServer(app);
-
-// Modulos do Socket.io
-const { Server } = require("socket.io");
-const io = new Server(server);
-
-// modulos customizados
-require('./modulos/spotify')(io, client); // modulo do overlay do spotify
-
 // cria um array com todas os arquivos de eventos
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
 
@@ -49,17 +36,3 @@ for (const file of commandFiles) {
 
 // Login to Discord with your client's token
 client.login(config.token);
-
-// Inicia servidor Express
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/pages/index.html');
-});
-
-app.get('/spotify', (req, res) => {
-    res.sendFile(__dirname + '/pages/spotify.html');
-});
-
-server.listen(3000, () => {
-    console.log(':: Iniciado servidor web na porta 3000');
-});
-
