@@ -15,7 +15,8 @@ function update(io, oldPresence, newPresence) {
     // se não tiver Spotify entre as atividades, cancela execução
     if (!spotify) {
         console.log(`Sem Spotify entre as atividades.`);
-        io.emit('spotify', 'test');
+        io.emit('spotify', 'pause');
+        // io.to(newPresence.userId).emit('spotify', 'pause'); // envia pause pra sala específica do userId
         return;
     }
 
@@ -31,7 +32,8 @@ function update(io, oldPresence, newPresence) {
     // console.log(spotify);
 
     // envia dados do spotify pro overlay
-    io.emit('spotify', spotify);
+    io.emit('spotify', spotify); 
+    // io.to(newPresence.userId).emit('spotify', spotify); // envia dados pra sala específica do userId
 
 }
 
@@ -45,11 +47,13 @@ module.exports = function (io, client) {
         console.log(':: Socket.io: a user connected via spotify.js');
         socket.on('loadSpotify', (id) => {
             console.log('spotify.js: ' + id);
+            //socket.join(id); // adiciona a conexão atual a uma sala do socket. Essa sala será usada pra emissão dos dados quanto troca musica, etc
 
             let guild = client.guilds.cache.get(config.guildId);
             let discordMember = guild.members.cache.get(id);
-            update(io, '', discordMember.presence);
-
+            if (discordMember) { // se o ID for válido, discordMember existe. Só enviamos o update nesse caso
+                update(io, '', discordMember.presence);
+            }
         });
     });
 

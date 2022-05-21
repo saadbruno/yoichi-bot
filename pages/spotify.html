@@ -7,8 +7,12 @@
     <title>Yoichi Spotify Overlay</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
     <style>
+
+        :root {
+            --info-width: 490px;
+        }
+
         body {
             margin: 0;
             transition: all 300ms ease;
@@ -22,6 +26,7 @@
             overflow: hidden;
             width: 650px;
             height: 150px;
+            transition: all 300ms ease;
         }
 
         #container.hide {
@@ -55,7 +60,7 @@
         }
 
         .info {
-            width: 490px;
+            width: var(--info-width);
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -64,8 +69,6 @@
 
         .info div {
             white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
             color: white;
         }
 
@@ -93,9 +96,37 @@
         #progress {
             height: 100%;
             background-color: white;
-            transition: all 350ms linear;
         }
+
+        .marquee {
+            position: relative;
+            animation-timing-function: cubic-bezier(0.1, 0, 0.9, 1);
+            animation-duration: 10s;
+            animation-delay: 0s;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+            animation-fill-mode: none;
+            animation-play-state: running;
+            animation-name: marquee-scroll;
+            width: max-content;
+        }
+
+        #artist.marquee {
+            animation-duration: 8s;
+        }
+
+        @keyframes marquee-scroll {
+            0%,10% {
+                transform: translateX(0px);
+            }
+
+            98%,100% {
+                transform: translateX(min(calc(-100% + var(--info-width)), 0px));
+            }
+        }
+
     </style>
+    <link id="customCss" rel="stylesheet" href="">
 </head>
 
 <body>
@@ -106,8 +137,8 @@
                 <img id="cover" src="" />
             </div>
             <div class="info">
-                <div id="title"></div>
-                <div id="artist"></div>
+                <div id="title" class="marquee"></div>
+                <div id="artist" class="marquee"></div>
                 <div id="album"></div>
                 <div id="progressContainer">
                     <div id="progress"></div>
@@ -118,6 +149,11 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
+
+        const params = new URLSearchParams(window.location.search);
+        const discordId = params.get('id');
+        const customCss = params.get('css');
+        document.querySelector('#customCss').href = customCss;
 
         // ===============
         // FUNÇÕES
@@ -170,15 +206,21 @@
         var timestamps = [];
 
         // quando a gente abre a página pela primeira vez, a gente pede os dados do spotify pro servidor
-        socket.on('connect', function () {
-            socket.emit('loadSpotify', '192723087429599232');
-        });
+        if (discordId) {
+            socket.on('connect', function () {
+                socket.emit('loadSpotify', discordId);
+            });
+        } else {
+            document.querySelector('#container').classList.remove('hide');
+            document.querySelector('#container').innerHTML = "por favor carregue a página com um ID do discord com /spotify?id=123456";
+        }
+
 
         // gerencia o recebimento dos dados do servidor
         socket.on('spotify', function (spotify) {
 
             // se os dados estiverem vazios, nenhuma música está tocando
-            if (!spotify) {
+            if (spotify == 'pause') {
                 console.log("no music!");
                 document.querySelector("#container").classList.add("hide");
                 document.querySelector("#dataContainer").classList.add("hide");

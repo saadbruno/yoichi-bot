@@ -20,7 +20,7 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 
 // modulos customizados
-require('./modulos/spotify')(io, client);
+require('./modulos/spotify')(io, client); // modulo do overlay do spotify
 
 // cria um array com todas os arquivos de eventos
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
@@ -30,22 +30,11 @@ for (const file of eventFiles) {
     const event = require(`./events/${file}`);
 
     if (event.once) { // checa se o modulo tem "once" como um dos parâmetros
-        if (event.socket) { // checa se o módulo tem o socket como um dos parâmetros. Se tiver, a gente passa o objeto do socket.io como o primeiro parâmetro da função
-            client.once(event.name, (...args) => event.execute(io, ...args));
-        } else {
-            client.once(event.name, (...args) => event.execute(...args));
-        }
-
+        client.once(event.name, (...args) => event.execute(...args));
     } else {
-        if (event.socket) { // checa se o módulo tem o socket como um dos parâmetros. Se tiver, a gente passa o objeto do socket.io como o primeiro parâmetro da função
-            client.on(event.name, (...args) => event.execute(io, ...args));
-        } else {
-            client.on(event.name, (...args) => event.execute(...args));
-        }
+        client.on(event.name, (...args) => event.execute(...args));
     }
 }
-
-// client.on('presenceUpdate', (...args) => spotify.update(io, ...args));
 
 // get commands
 client.commands = new Collection();
