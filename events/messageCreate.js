@@ -4,6 +4,7 @@ var blacklist = [];
 
 try {
     var blacklist = require('../data/blacklist.json');
+    console.log(`:: Adicionadas ${blacklist.length} palavras na blacklist`);
 } catch (ex) {
     console.log(`[WARN] Arquivo data/blacklist.json não existe. Recurso de blacklist não será usado.`);
 }

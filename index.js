@@ -1,17 +1,22 @@
 // Require the necessary discord.js classes
 const fs = require('fs');
+const config = require('./config.json');
+const package = require('./package.json');
+
+console.log(`========= YOICHI BOT v${package.version} =========`);
+
+// modulos do discordjs
 const { Client, Collection, Intents } = require('discord.js');
-const { token } = require('./config.json');
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_PRESENCES] });
 
-// Create a new client instance
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] });
-
-// get events
+// cria um array com todas os arquivos de eventos
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
 
+// loop com todos os eventos, inserindo eles como módulos
 for (const file of eventFiles) {
     const event = require(`./events/${file}`);
-    if (event.once) {
+
+    if (event.once) { // checa se o modulo tem "once" como um dos parâmetros
         client.once(event.name, (...args) => event.execute(...args));
     } else {
         client.on(event.name, (...args) => event.execute(...args));
@@ -30,4 +35,4 @@ for (const file of commandFiles) {
 }
 
 // Login to Discord with your client's token
-client.login(token);
+client.login(config.token);

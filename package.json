@@ -1,6 +1,6 @@
 {
   "name": "yoichi-bot",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "description": "yoichi bot pro monasterio",
   "main": "index.js",
   "scripts": {
@@ -17,14 +17,16 @@
   },
   "homepage": "https://github.com/saadbruno/yoichi-bot#readme",
   "dependencies": {
-    "airtable": "^0.11.1",
-    "cron": "^1.8.2",
     "@discordjs/builders": "^0.6.0",
     "@discordjs/rest": "^0.1.0-canary.0",
+    "airtable": "^0.11.1",
+    "cron": "^1.8.2",
     "discord-api-types": "^0.22.0",
     "discord.js": "^13.1.0",
+    "express": "^4.17.3",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.33",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "socket.io": "^4.4.1"
   }
 }

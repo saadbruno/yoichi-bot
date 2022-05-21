@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Yoichi Spotify Overlay</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+
+        :root {
+            --info-width: 490px;
+        }
+
+        body {
+            margin: 0;
+            transition: all 300ms ease;
+            font-family: 'Verdana', system-ui, sans-serif;
+        }
+
+        #container {
+            opacity: 1;
+            background-color: #55d3ff;
+            position: relative;
+            overflow: hidden;
+            width: 650px;
+            height: 150px;
+            transition: all 300ms ease;
+        }
+
+        #container.hide {
+            opacity: 0;
+        }
+
+        #dataContainer {
+            opacity: 1;
+            position: relative;
+            left: 0;
+            transition: all 300ms ease;
+            display: flex;
+            gap: 10px;
+            margin: 10px;
+        }
+
+        #dataContainer.hide {
+            opacity: 0.01;
+            left: -100px;
+        }
+
+        #cover {
+            width: 130px;
+            height: 130px;
+        }
+
+        #coverContainer {
+            width: 130px;
+            height: 130px;
+            /* margin-right: 10px; */
+        }
+
+        .info {
+            width: var(--info-width);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .info div {
+            white-space: nowrap;
+            color: white;
+        }
+
+        #album {
+            display: none;
+        }
+
+        #title {
+            font-size: 40px;
+            font-weight: 700;
+            line-height: 44px;
+        }
+
+        #artist {
+            font-size: 30px;
+        }
+
+        #progressContainer {
+            width: 100%;
+            height: 8px;
+            background-color: #ffffff45;
+            margin-top: 30px;
+        }
+
+        #progress {
+            height: 100%;
+            background-color: white;
+        }
+
+        .marquee {
+            position: relative;
+            animation-timing-function: cubic-bezier(0.1, 0, 0.9, 1);
+            animation-duration: 10s;
+            animation-delay: 0s;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+            animation-fill-mode: none;
+            animation-play-state: running;
+            animation-name: marquee-scroll;
+            width: max-content;
+        }
+
+        #artist.marquee {
+            animation-duration: 8s;
+        }
+
+        @keyframes marquee-scroll {
+            0%,10% {
+                transform: translateX(0px);
+            }
+
+            98%,100% {
+                transform: translateX(min(calc(-100% + var(--info-width)), 0px));
+            }
+        }
+
+    </style>
+    <link id="customCss" rel="stylesheet" href="">
+</head>
+
+<body>
+
+    <div id="container" class="hide">
+        <div id="dataContainer">
+            <div id="coverContainer">
+                <img id="cover" src="" />
+            </div>
+            <div class="info">
+                <div id="title" class="marquee"></div>
+                <div id="artist" class="marquee"></div>
+                <div id="album"></div>
+                <div id="progressContainer">
+                    <div id="progress"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+
+        const params = new URLSearchParams(window.location.search);
+        const discordId = params.get('id');
+        const customCss = params.get('css');
+        document.querySelector('#customCss').href = customCss;
+
+        // ===============
+        // FUNÇÕES
+        // ===============
+
+        // função de delay pra usar em async / await
+        const delay = ms => new Promise(res => setTimeout(res, ms));
+
+        // função que insere os dados do spotify no DOM
+        function insertData(title, artist, album, cover) {
+            document.querySelector("#title").innerHTML = title;
+            document.querySelector("#artist").innerHTML = artist.replace(/;/g, ',');
+            document.querySelector("#album").innerHTML = album;
+            document.querySelector("#cover").src = `https://i.scdn.co/image/${cover.slice(8)}`;
+        }
+
+        // função que atualiza a barra de progresso. Chamada a cada 350ms
+        function progressBar() {
+            let duration = new Date(timestamps.end) - new Date(timestamps.start);
+            let remaining = new Date(timestamps.end) - new Date();
+            let progress = (duration - remaining) / duration;
+
+            document.querySelector('#progress').style.width = `${progress * 100}%`;
+        }
+
+        // Função principal que gerencia quais containers mostrar, esconder, quando que trocamos os dados no DOM, etc
+        const updateOverlay = async (title, artist, album, cover) => {
+            // mostra o container principal
+            document.querySelector("#container").classList.remove("hide");
+
+            // esconde os dados (antes de trocar)
+            document.querySelector("#dataContainer").classList.add("hide");
+
+            // espera 350ms (tempo da transição do CSS)
+            await delay(350);
+
+            // roda a função que insere os dados no DOM
+            insertData(title, artist, album, cover);
+
+            // mostra os dados
+            document.querySelector("#dataContainer").classList.remove("hide");
+        };
+
+        // ===============
+        // FIM DAS FUNÇÕES
+        // ===============
+
+        var socket = io();
+
+        var timestamps = [];
+
+        // quando a gente abre a página pela primeira vez, a gente pede os dados do spotify pro servidor
+        if (discordId) {
+            socket.on('connect', function () {
+                socket.emit('loadSpotify', discordId);
+            });
+        } else {
+            document.querySelector('#container').classList.remove('hide');
+            document.querySelector('#container').innerHTML = "por favor carregue a página com um ID do discord com /spotify?id=123456";
+        }
+
+
+        // gerencia o recebimento dos dados do servidor
+        socket.on('spotify', function (spotify) {
+
+            // se os dados estiverem vazios, nenhuma música está tocando
+            if (spotify == 'pause') {
+                console.log("no music!");
+                document.querySelector("#container").classList.add("hide");
+                document.querySelector("#dataContainer").classList.add("hide");
+                return
+            }
+
+            // se chegamos até aqui, então tem música rolando
+            console.log('socket data', spotify);
+
+            // chama a função principal que atualiza os dados
+            updateOverlay(spotify.details, spotify.state, spotify.assets.largeText, spotify.assets.largeImage);
+
+            timestamps = spotify.timestamps;
+
+        });
+
+        // atualizar a barra de progresso
+        setInterval(progressBar, 350);
+
+    </script>
+</body>
+
+</html>

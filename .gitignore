@@ -1,6 +1,7 @@
 # custom bot stuff
 config.json
 data/blacklist.json
+temp/*
 
 # Logs
 logs
