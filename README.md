@@ -3,6 +3,7 @@ Um bot feito de brincadeira para o Discord do [Monastério Gentileza](https://di
 
 ![image](https://user-images.githubusercontent.com/23201434/131280096-bbf7ecaa-691f-4bf6-b6cf-1e8df5884fef.png)
 ![image](https://user-images.githubusercontent.com/23201434/131280108-1400a8de-f87e-4217-ae1d-f74f4ccd0976.png)
+![image](https://user-images.githubusercontent.com/23201434/169664613-805112ed-a22d-4132-920c-4b948d44a679.png)
 
 ## Recursos:
 - Reações a menções de "Yoichi", "Bom dia, Yoichi", entre outros.
@@ -11,6 +12,7 @@ Um bot feito de brincadeira para o Discord do [Monastério Gentileza](https://di
 - Mostra como linkar a conta da Twitch com o Discord.
 - Pomodoro no Discord!
 - Blacklist de palavras (mensagens são removidas automaticamente)
+- Overlay de música do Spotify, baseado na presença do Discord
 
 ## Desenvolvimento:
 Pull requests são muito bem vindas!
@@ -50,6 +52,7 @@ Atualmente o bot não conta com um setup de Docker para Dev, mas conta com um pa
 
 ### Run
 - Crie um arquivo `config.json` com base no [repositorio](https://github.com/saadbruno/yoichi-bot/blob/main/config.json.example)
+- Crie um arquivo `blacklist.json` com base no [repositorio](https://github.com/saadbruno/yoichi-bot/blob/main/data/blacklist.json.example)
 
 - Opção 1: Docker run
 `docker run -v $(pwd)/config.json:/usr/src/app/config.json --name yoichi-bot saadbruno/yoichi-bot`
@@ -62,10 +65,14 @@ services:
     image: saadbruno/yoichi-bot
     restart: unless-stopped
     volumes:
-      - ./config.json:/usr/src/app/config.json
-      - ./data/blacklist.json:/usr/src/app/data/blacklist.json
+      - ./config.json:/usr/src/app/config.json:ro
+      - ./data/blacklist.json:/usr/src/app/data/blacklist.json:ro
+    ports:
+      - 3000:3000
 ```
 
 ## Links úteis
 - [Discord.js](https://discord.js.org/)
 - [Airtable.js](https://github.com/Airtable/airtable.js)
+- [Express](https://expressjs.com/)
+- [Socket.io](https://socket.io/)

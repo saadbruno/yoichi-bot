@@ -3,7 +3,7 @@ services:
   yoichi-bot:
     image: saadbruno/yoichi-bot
     volumes:
-      - ./config.json:/usr/src/app/config.json
-      - ./data/blacklist.json:/usr/src/app/data/blacklist.json
+      - ./config.json:/usr/src/app/config.json:ro
+      - ./data/blacklist.json:/usr/src/app/data/blacklist.json:ro
     ports:
       - 3000:3000
