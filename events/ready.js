@@ -36,12 +36,15 @@ module.exports = {
         // EXPRESS
         // =============
         app.get('/', (req, res) => {
-            res.sendFile(path.resolve(__dirname, '..') + '/../pages/index.html');
+            res.sendFile(path.resolve(__dirname, '..') + '/web/pages/index.html');
         });
 
         app.get('/spotify', (req, res) => {
-            res.sendFile(path.resolve(__dirname, '..') + '/pages/spotify.html');
+            res.sendFile(path.resolve(__dirname, '..') + '/web/pages/spotify.html');
         });
+
+        app.use(express.static(path.resolve(__dirname, '..') + '/web/static')); // public directory
+        app.use(express.static(path.resolve(__dirname, '..') + '/node_modules/bootstrap/dist')); // bootstrap
 
         server.listen(3000, () => {
             console.log(':: Iniciado servidor web na porta 3000');

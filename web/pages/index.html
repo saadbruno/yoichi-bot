@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Yoichi Bot</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <style>
+        ol.pap li {
+            padding-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container text-center">
+        <!-- Titulo -->
+        <div class="row justify-content-center gy-3">
+            <div class="col-12 col-md-2 pt-3">
+                <img class="img-fluid rounded"
+                    src="https://cdn.discordapp.com/app-icons/822329284424761344/393aebcf9b053dea9fe72dc08a70b20d.png?size=256" />
+            </div>
+            <div class="col-12">
+                <h1>Yoichi</h1>
+                Yoichi Bot, o bot do Discord <strong>Monastério Gentileza</strong>
+            </div>
+            <div class="col-12">
+                <a class="btn btn-primary" href="https://discord.com/invite/KkkbH2KqvV" target="_blank" role="button">
+                    Entre no nosso Discord!
+                </a>
+            </div>
+        </div>
+        <hr />
+        <!-- overlay Spotify -->
+        <div class="row justify-content-center gy-3">
+            <div class="col-12">
+                <h2>Overlay do Spotify</h2>
+                <p>Um overlay de música do Spotify simples e fácil de usar pra sua stream!</p>
+                <p>Não precisa de configuração, e ainda permite customização CSS</p>
+            </div>
+            <div class="col-12">
+                <img class="img-fluid" src="/img/spotify-overlay-default.png" />
+            </div>
+            <div class="col-12">
+                <img class="img-fluid" src="/img/spotify-overlay-monge.png" />
+            </div>
+            <div class="col-12 col-lg-8 text-start pt-3">
+                <h3 class="text-center">Como usar:</h3>
+                <ol class="pap">
+                    <li>
+                        Seja membro do Discord <a href="https://discord.com/invite/KkkbH2KqvV"
+                            target="_blank">Monastério Gentileza</a>
+                    </li>
+                    <li>
+                        Insira seu ID do Discord
+                        <a tabindex="0" class="btn btn-sm btn-secondary py-0" role="button" data-bs-toggle="popover"
+                            data-bs-trigger="focus" data-bs-html="true"
+                            data-bs-content="Não sabe qual seu ID do Discord? <ol><li>Habilite o modo desenvolvedor do Discord, nas opções.</li><li>Clique com o botão direito no seu nome, e selecione 'copiar ID'.</li></ol> <a target='_blank' href='https://support.discord.com/hc/pt-br/articles/206346498-Onde-posso-encontrar-minhas-IDs-de-Usu%C3%A1rio-Servidor-Mensagem-'>Mais detalhes</a>">
+                            ?
+                        </a>
+                        <input type="text" class="form-control form-control-sm" id="discordId"
+                            placeholder="Seu ID do Discord. Ex: 4478445155198796">
+                    </li>
+                    <li>
+                        (opcional) - Insira o link para um CSS customizado, para alterar a aparência do overlay
+                        <a tabindex="0" class="btn btn-sm btn-secondary py-0" role="button" data-bs-toggle="popover"
+                            data-bs-trigger="focus" data-bs-html="true"
+                            data-bs-content="Você pode alterar a aparência do player usando CSS customizado, trocando fontes, cores e o layout como um todo. <a target='_blank' href='https://files.saadbruno.com/css/spotifyExemplo.css'>Exemplo</a>">
+                            ?
+                        </a>
+                        <input type="text" class="form-control form-control-sm" id="customCss"
+                            placeholder="Ex: https://files.saadbruno.com/css/spotifyExemplo.css">
+                    </li>
+                    <li>
+                        Coloque esse link como um Browser Source no OBS<br>
+                        <span id="openOverlayTooltip" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip"
+                            title="Insira seu ID do Discord">
+                            <a id="openOverlay" target="_blank" class="btn btn-primary mt-2 disabled" href="/spotify" role="button">
+                                Abrir overlay!
+                            </a>
+                        </span>
+                    </li>
+                </ol>
+            </div>
+        </div>
+        <hr />
+        <!-- github -->
+        <div class="row justify-content-center gy-3">
+            <div class="col-12">
+                <h2>Código fonte</h2>
+                <p>Yoichi é um bot em código aberto! Contribuições são sempre bem vindas.</p>
+                <p>Acesse nosso projeto no <a href="https://github.com/saadbruno/yoichi-bot" target="_blank" rel="noopener noreferrer">Github</a> para mais informações.</p>
+            </div>
+        </div>
+        <hr />
+    </div>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // ativar popovers e tooltips do bootstrap
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+        const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+        const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
+        // gerencia inputs do overlay do spotify
+        document.getElementById("discordId").addEventListener("input", updateOverlayLink);
+        document.getElementById("customCss").addEventListener("input", updateOverlayLink);
+
+        function updateOverlayLink() {
+            let discordId = document.getElementById("discordId").value;
+            let customCss = document.getElementById("customCss").value;
+
+            document.getElementById("openOverlay").href = `/spotify?id=${discordId}&css=${customCss}`;
+
+            if (discordId) {
+                bootstrap.Tooltip.getInstance('#openOverlayTooltip').disable();
+                document.getElementById("openOverlay").classList.remove("disabled");
+            } else {
+                bootstrap.Tooltip.getInstance('#openOverlayTooltip').enable();
+                document.getElementById("openOverlay").classList.add("disabled");
+            }
+
+        }
+    </script>
+</body>
+
+</html>
