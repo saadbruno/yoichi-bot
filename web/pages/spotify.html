@@ -8,7 +8,6 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-
         :root {
             --info-width: 490px;
         }
@@ -98,6 +97,10 @@
             background-color: white;
         }
 
+        .separator {
+            display: none;
+        }
+
         .marquee {
             position: relative;
             animation-timing-function: cubic-bezier(0.1, 0, 0.9, 1);
@@ -137,9 +140,17 @@
                 <img id="cover" src="" />
             </div>
             <div class="info">
-                <div id="title" class="marquee"></div>
-                <div id="artist" class="marquee"></div>
-                <div id="album"></div>
+                <div id="titleContainer">
+                    <div id="title" class="marquee"></div>
+                </div>
+                <div id="titleArtistSeparator" class="separator"></div>
+                <div id="artistContainer">
+                    <div id="artist" class="marquee"></div>
+                </div>
+                <div id="artistAlbumSeparator" class="separator"></div>
+                <div id="albumContainer">
+                    <div id="album" class="marquee"></div>
+                </div>
                 <div id="progressContainer">
                     <div id="progress"></div>
                 </div>
