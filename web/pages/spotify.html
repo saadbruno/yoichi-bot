@@ -119,17 +119,34 @@
         }
 
         @keyframes marquee-scroll {
-            0%,10% {
+
+            0%,
+            10% {
                 transform: translateX(0px);
             }
 
-            98%,100% {
+            98%,
+            100% {
                 transform: translateX(min(calc(-100% + var(--info-width)), 0px));
             }
         }
-
     </style>
-    <link id="customCss" rel="stylesheet" href="">
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const discordId = params.get('id');
+        const customCss = params.get('css');
+
+        if (!document.getElementById("customCss") && customCss) {
+            var head  = document.getElementsByTagName('head')[0];
+            var link  = document.createElement('link');
+            link.id   = "customCss";
+            link.rel  = 'stylesheet';
+            link.type = 'text/css';
+            link.href = customCss;
+            link.media = 'all';
+            head.appendChild(link);
+        }
+    </script>
 </head>
 
 <body>
@@ -160,12 +177,6 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-
-        const params = new URLSearchParams(window.location.search);
-        const discordId = params.get('id');
-        const customCss = params.get('css');
-        document.querySelector('#customCss').href = customCss;
-
         // ===============
         // FUNÇÕES
         // ===============
@@ -207,6 +218,22 @@
             // mostra os dados
             document.querySelector("#dataContainer").classList.remove("hide");
         };
+
+        // Função pra adicionar estilo, retirado de https://www.geeksforgeeks.org/how-to-create-a-style-tag-using-javascript/
+        function addStyle(styles) {
+
+            /* Create style document */
+            var css = document.createElement('style');
+            css.type = 'text/css';
+
+            if (css.styleSheet)
+                css.styleSheet.cssText = styles;
+            else
+                css.appendChild(document.createTextNode(styles));
+
+            /* Append style to the tag name */
+            document.getElementsByTagName("head")[0].appendChild(css);
+        }
 
         // ===============
         // FIM DAS FUNÇÕES
